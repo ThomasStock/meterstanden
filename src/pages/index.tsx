@@ -29,7 +29,7 @@ const Home: NextPage = () => {
             setData([...data, { date: DateTime.now(), value: 20352.3 }]);
           }}
         >
-          Add dummy data
+          Add dummy data for today
         </button>
         <DailyUseGraph
           title="Dagelijks verbruik laatste week"
