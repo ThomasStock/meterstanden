@@ -3,9 +3,10 @@ import Head from "next/head";
 import { DateTime } from "luxon";
 import Graph, { Entry } from "../components/Graph";
 import { useMemo, useState } from "react";
-import { Button, InputAdornment, MenuItem, TextField } from "@mui/material";
+import { Button, InputAdornment, TextField } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import getDailyAverages from "../utils/getDailyAverages";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
 const dummy: Entry[] = [
   { date: DateTime.fromISO("2020-10-01"), value: 16208 },
@@ -24,6 +25,9 @@ const Home: NextPage = () => {
   );
 
   const [input, setInput] = useState<number | undefined>();
+  const [inputDate, setInputDate] = useState<DateTime | null>(DateTime.now);
+
+  console.log("date", inputDate?.isValid);
 
   return (
     <>
@@ -48,21 +52,20 @@ const Home: NextPage = () => {
             className="flex-grow flex-shrink"
             inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
           />
-          <TextField
-            autoComplete="off"
-            select
-            value={"now"}
+          <DesktopDatePicker
+            disableFuture
+            minDate={DateTime.now().minus({ year: 10 })}
+            maxDate={DateTime.now()}
+            value={inputDate}
+            onChange={(newValue) => {
+              setInputDate(newValue);
+            }}
+            inputFormat="dd/MM/yyyy"
+            renderInput={(params) => <TextField {...params} />}
             className="flex-shrink-0"
-          >
-            <MenuItem key={"now"} value={"now"}>
-              Right now
-            </MenuItem>
-            <MenuItem key={"pick"} value={"pick"}>
-              Pick date...
-            </MenuItem>
-          </TextField>
+          />
           <Button
-            disabled={!input}
+            disabled={!input || !inputDate?.isValid}
             onClick={() => {
               setMeterValues([
                 ...meterValues,
@@ -72,7 +75,7 @@ const Home: NextPage = () => {
             }}
             variant="outlined"
           >
-            Add
+            Toevoegen
           </Button>
         </Stack>
 
@@ -83,7 +86,11 @@ const Home: NextPage = () => {
           isAverage
         />
 
-        <Graph title="Meterstand" energyUnit="kWh" data={meterValues} />
+        <Graph
+          title="Meterstand evolutie"
+          energyUnit="kWh"
+          data={meterValues}
+        />
       </main>
     </>
   );
