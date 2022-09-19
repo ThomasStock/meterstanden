@@ -36,7 +36,7 @@ const Home: NextPage = () => {
             }}
             placeholder={data[data.length - 1]?.value.toString()}
             className="flex-grow flex-shrink"
-            inputProps={{ inputMode: "decimal", pattern: "[0-9,.]*" }}
+            inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
           />
           <TextField
             autoComplete="off"
