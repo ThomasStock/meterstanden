@@ -4,6 +4,7 @@ import Head from "next/head";
 import { DateTime } from "luxon";
 import DailyUseGraph, { Entry } from "../components/DailyUseGraph";
 import { useState } from "react";
+import { Button, TextField } from "@mui/material";
 
 const dummy: Entry[] = [
   { date: DateTime.fromISO("2020-10-01"), value: 16208 },
@@ -23,14 +24,18 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container mx-auto flex flex-col items-center justify-center p-4">
-        <button
-          onClick={() => {
-            setData([...data, { date: DateTime.now(), value: 20352.3 }]);
-          }}
-        >
-          Add dummy data for today
-        </button>
+      <main className="container mx-auto flex flex-col items-center justify-center p-5 max-w-2xl">
+        <div className="flex container mb-5">
+          <TextField fullWidth />
+          <Button
+            onClick={() => {
+              setData([...data, { date: DateTime.now(), value: 20352.3 }]);
+            }}
+          >
+            Add
+          </Button>
+        </div>
+
         <DailyUseGraph
           title="Dagelijks verbruik laatste week"
           energyUnit="kWh"

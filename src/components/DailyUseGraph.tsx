@@ -14,6 +14,7 @@ import "chartjs-adapter-luxon";
 
 import { DateTime, DateTimeUnit } from "luxon";
 import { useMemo } from "react";
+import { Paper } from "@mui/material";
 
 Chart.register(
   TimeScale,
@@ -53,7 +54,10 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
   );
 
   return (
-    <article className="container flex flex-col items-center mb-5 max-w-2xl select-none">
+    <Paper
+      elevation={2}
+      className="container flex flex-col items-center mb-5 p-3 select-none"
+    >
       <Line
         options={{
           elements: {
@@ -147,7 +151,7 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
           ]
         }}
       />
-    </article>
+    </Paper>
   );
 };
 
