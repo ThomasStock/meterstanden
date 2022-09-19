@@ -3,8 +3,9 @@ import Head from "next/head";
 
 import { DateTime } from "luxon";
 import DailyUseGraph, { Entry } from "../components/DailyUseGraph";
+import { useState } from "react";
 
-const data: Entry[] = [
+const dummy: Entry[] = [
   { date: DateTime.fromISO("2020-10-01"), value: 16208 },
   { date: DateTime.fromISO("2021-10-11T09:24:12"), value: 18362 },
   { date: DateTime.fromISO("2022-08-29"), value: 20257 },
@@ -12,6 +13,8 @@ const data: Entry[] = [
 ];
 
 const Home: NextPage = () => {
+  const [data, setData] = useState(dummy);
+
   return (
     <>
       <Head>
@@ -21,6 +24,13 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
+        <button
+          onClick={() => {
+            setData([...data, { date: DateTime.now(), value: 20352.3 }]);
+          }}
+        >
+          Add dummy data
+        </button>
         <DailyUseGraph
           title="Dagelijks verbruik laatste week"
           energyUnit="kWh"

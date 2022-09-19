@@ -95,7 +95,7 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
           scales: {
             x: {
               type: "time",
-              max: DateTime.now().toISO(),
+              suggestedMax: DateTime.now().toISO(),
               min: min?.toISO(),
               ticks: {
                 autoSkipPadding: 32,
