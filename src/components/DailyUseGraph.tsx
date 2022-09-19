@@ -70,6 +70,11 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
                   return date.toLocaleString(
                     hasTime ? DateTime.DATETIME_MED : DateTime.DATE_MED
                   );
+                },
+                label: (item) => {
+                  return (
+                    (item.raw as { y: number }).y.toFixed(2) + " " + energyUnit
+                  );
                 }
               }
             }
