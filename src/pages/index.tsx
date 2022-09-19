@@ -36,6 +36,7 @@ const Home: NextPage = () => {
             }}
             placeholder={data[data.length - 1]?.value.toString()}
             className="flex-grow flex-shrink"
+            inputMode="numeric"
           />
           <TextField
             autoComplete="off"
