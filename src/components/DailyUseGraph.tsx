@@ -7,7 +7,8 @@ import {
   LineElement,
   Title,
   Legend,
-  BarElement
+  BarElement,
+  Tooltip
 } from "chart.js";
 import "chartjs-adapter-luxon";
 
@@ -21,7 +22,8 @@ Chart.register(
   LineElement,
   BarElement,
   Title,
-  Legend
+  Legend,
+  Tooltip
 );
 
 export interface Entry {
@@ -43,7 +45,7 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
   const data = useMemo(() => getUsableData(measurements), [measurements]);
 
   return (
-    <article className="container flex flex-col items-center mb-5">
+    <article className="container flex flex-col items-center mb-5 max-w-2xl">
       <Line
         options={{
           plugins: {
@@ -53,6 +55,23 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
             title: {
               display: true,
               text: title
+            },
+            tooltip: {
+              enabled: true,
+              callbacks: {
+                title: (item) => {
+                  if (!item[0]) {
+                    return "";
+                  }
+                  const date = (item[0].raw as { x: DateTime }).x;
+                  const hasTime =
+                    date.hour !== 0 || date.minute !== 0 || date.second !== 0;
+
+                  return date.toLocaleString(
+                    hasTime ? DateTime.DATETIME_MED : DateTime.DATE_MED
+                  );
+                }
+              }
             }
           },
           scales: {

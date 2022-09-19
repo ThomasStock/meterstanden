@@ -6,7 +6,7 @@ import DailyUseGraph, { Entry } from "../components/DailyUseGraph";
 
 const data: Entry[] = [
   { date: DateTime.fromISO("2020-10-01"), value: 16208 },
-  { date: DateTime.fromISO("2021-10-11T09:24"), value: 18362 },
+  { date: DateTime.fromISO("2021-10-11T09:24:12"), value: 18362 },
   { date: DateTime.fromISO("2022-08-29"), value: 20257 },
   { date: DateTime.fromISO("2022-09-14"), value: 20322.3 }
 ];
