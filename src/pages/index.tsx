@@ -22,11 +22,6 @@ const Home: NextPage = () => {
 
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
         <DailyUseGraph
-          title="Dagelijks verbruik sinds begin metingen"
-          energyUnit="kWh"
-          measurements={data}
-        />
-        <DailyUseGraph
           title="Dagelijks verbruik laatste week"
           energyUnit="kWh"
           measurements={data}
@@ -39,6 +34,11 @@ const Home: NextPage = () => {
           measurements={data}
           min={DateTime.now().minus({ month: 1 })}
           timeUnit="week"
+        />
+        <DailyUseGraph
+          title="Dagelijks verbruik sinds begin metingen"
+          energyUnit="kWh"
+          measurements={data}
         />
       </main>
     </>
