@@ -16,6 +16,9 @@ const dummy: Entry[] = [
 
 const Home: NextPage = () => {
   const [data, setData] = useState(dummy);
+  const lastInput = data[data.length - 1]?.value;
+
+  const [input, setInput] = useState<number | undefined>();
 
   return (
     <>
@@ -34,7 +37,9 @@ const Home: NextPage = () => {
                 <InputAdornment position="start">kWh</InputAdornment>
               )
             }}
-            placeholder={data[data.length - 1]?.value.toString()}
+            value={input ?? ""}
+            onChange={(event) => setInput(parseFloat(event.target.value))}
+            placeholder={lastInput ? lastInput.toFixed(1) : ""}
             className="flex-grow flex-shrink"
             inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
           />
@@ -52,9 +57,15 @@ const Home: NextPage = () => {
             </MenuItem>
           </TextField>
           <Button
+            disabled={!input}
             onClick={() => {
-              setData([...data, { date: DateTime.now(), value: 20352.3 }]);
+              setData([
+                ...data,
+                { date: DateTime.now(), value: input as number }
+              ]);
+              setInput(undefined);
             }}
+            variant="outlined"
           >
             Add
           </Button>
