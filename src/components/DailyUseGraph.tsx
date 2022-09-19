@@ -39,6 +39,8 @@ interface DailyUseLineProps {
   title: string;
 }
 
+const red = "rgb(255, 99, 132)";
+
 const DailyUseGraph = (props: DailyUseLineProps) => {
   const { energyUnit, measurements, min, timeUnit, title } = props;
 
@@ -48,6 +50,14 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
     <article className="container flex flex-col items-center mb-5 max-w-2xl">
       <Line
         options={{
+          elements: {
+            point: {
+              radius: 6,
+              hoverRadius: 10,
+              backgroundColor: red,
+              hitRadius: 18
+            }
+          },
           plugins: {
             legend: {
               display: false
@@ -101,7 +111,7 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
         data={{
           datasets: [
             {
-              borderColor: "rgb(255, 99, 132)",
+              borderColor: red,
               data
             }
           ]
