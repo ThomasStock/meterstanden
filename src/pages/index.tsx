@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { DateTime } from "luxon";
-import DailyUseGraph, { Entry } from "../components/DailyUseGraph";
+import Graph, { Entry } from "../components/Graph";
 import { useMemo, useState } from "react";
 import { Button, InputAdornment, MenuItem, TextField } from "@mui/material";
 import Stack from "@mui/material/Stack";
@@ -76,11 +76,14 @@ const Home: NextPage = () => {
           </Button>
         </Stack>
 
-        <DailyUseGraph
+        <Graph
           title="Gemiddeld verbruik/dag"
           energyUnit="kWh"
           data={dailyAverages}
+          isAverage
         />
+
+        <Graph title="Meterstand" energyUnit="kWh" data={meterValues} />
       </main>
     </>
   );

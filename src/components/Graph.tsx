@@ -11,7 +11,6 @@ import {
   Tooltip
 } from "chart.js";
 import "chartjs-adapter-luxon";
-
 import { DateTime, DateTimeUnit } from "luxon";
 import { useState } from "react";
 import { Button, ButtonGroup, Paper } from "@mui/material";
@@ -32,10 +31,11 @@ export interface Entry {
   value: number;
 }
 
-interface DailyUseLineProps {
+interface GraphProps {
   energyUnit: string;
   data: Entry[];
   title: string;
+  isAverage?: boolean;
 }
 
 interface TimeScaleOptions {
@@ -64,14 +64,15 @@ const scales: TimeScaleOptions[] = [
 ];
 
 const red = "rgb(255, 99, 132)";
+const blue = "rgb(0, 168, 255)";
 
-const DailyUseGraph = (props: DailyUseLineProps) => {
-  const { energyUnit, data, title } = props;
+const Graph = (props: GraphProps) => {
+  const { energyUnit, data, title, isAverage } = props;
 
-  const [scaleIndex, setScaleIndex] = useState(0);
+  const [scaleIndex, setScaleIndex] = useState(
+    isAverage ? 0 : scales.length - 1
+  );
   const { min, timeUnit, relative } = scales[scaleIndex] as TimeScaleOptions;
-
-  console.log("data", data);
 
   const [suggestedMax] = useState(
     Math.max(...data.map((data) => data.value)) * 1.2
@@ -86,10 +87,10 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
         options={{
           elements: {
             point: {
-              radius: 6,
-              hoverRadius: 10,
-              backgroundColor: red,
-              hitRadius: 18
+              radius: 3,
+              hoverRadius: 6,
+              backgroundColor: blue,
+              hitRadius: 14
             }
           },
           plugins: {
@@ -101,25 +102,45 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
               text: title
             },
             tooltip: {
+              displayColors: false,
               enabled: true,
               callbacks: {
                 title: (item) => {
-                  if (!item[0]) {
+                  const tooltipItem = item[0];
+                  if (!tooltipItem) {
                     return "";
                   }
-                  const date = (item[0].raw as { x: DateTime }).x;
-                  const hasTime =
-                    date.hour !== 0 || date.minute !== 0 || date.second !== 0;
+                  console.log(tooltipItem);
+                  const date = (tooltipItem.raw as { x: DateTime }).x;
 
-                  return date.toLocaleString(
-                    hasTime
-                      ? DateTime.DATETIME_MED_WITH_WEEKDAY
-                      : DateTime.DATE_MED_WITH_WEEKDAY
-                  );
+                  if (!isAverage) {
+                    return renderDate(date);
+                  }
+
+                  return "";
                 },
                 label: (item) => {
+                  const usageAsString =
+                    (item.raw as { y: number }).y.toFixed(2) + " " + energyUnit;
+
+                  if (!isAverage) {
+                    return "Gelogde meterstand: " + usageAsString;
+                  }
+
+                  console.log("item", item);
+
+                  const date = data[item.dataIndex]?.date as DateTime;
+                  const previousDate = data[item.dataIndex - 1]
+                    ?.date as DateTime;
+
                   return (
-                    (item.raw as { y: number }).y.toFixed(2) + " " + energyUnit
+                    "Tussen " +
+                    previousDate.toLocaleString(DateTime.DATE_SHORT) +
+                    " en " +
+                    date.toLocaleString(DateTime.DATE_SHORT) +
+                    " was je verbruik gemiddeld " +
+                    usageAsString +
+                    " per dag"
                   );
                 }
               }
@@ -161,8 +182,8 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
             y: {
               type: "linear",
               title: { display: true, text: energyUnit },
-              min: 0,
-              suggestedMax
+              min: isAverage ? 0 : undefined,
+              suggestedMax: isAverage ? suggestedMax : undefined
             }
           }
         }}
@@ -176,19 +197,31 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
         }}
       />
 
-      <ButtonGroup variant="text">
-        {scales.map((scale, index) => (
-          <Button
-            key={index}
-            disabled={index === scaleIndex}
-            onClick={() => setScaleIndex(index)}
-          >
-            {scale.label}
-          </Button>
-        ))}
-      </ButtonGroup>
+      {isAverage ? (
+        <ButtonGroup variant="text">
+          {scales.map((scale, index) => (
+            <Button
+              key={index}
+              disabled={index === scaleIndex}
+              onClick={() => setScaleIndex(index)}
+            >
+              {scale.label}
+            </Button>
+          ))}
+        </ButtonGroup>
+      ) : null}
     </Paper>
   );
 };
 
-export default DailyUseGraph;
+export default Graph;
+
+const renderDate = (date: DateTime) => {
+  const hasTime = date.hour !== 0 || date.minute !== 0 || date.second !== 0;
+
+  return date.toLocaleString(
+    hasTime
+      ? DateTime.DATETIME_MED_WITH_WEEKDAY
+      : DateTime.DATE_MED_WITH_WEEKDAY
+  );
+};
