@@ -37,17 +37,18 @@ interface DailyUseLineProps {
   min?: DateTime;
   timeUnit?: DateTimeUnit;
   title: string;
+  relative?: boolean;
 }
 
 const red = "rgb(255, 99, 132)";
 
 const DailyUseGraph = (props: DailyUseLineProps) => {
-  const { energyUnit, measurements, min, timeUnit, title } = props;
+  const { energyUnit, measurements, min, timeUnit, title, relative } = props;
 
   const data = useMemo(() => getUsableData(measurements), [measurements]);
 
   return (
-    <article className="container flex flex-col items-center mb-5 max-w-2xl">
+    <article className="container flex flex-col items-center mb-5 max-w-2xl select-none">
       <Line
         options={{
           elements: {
@@ -78,7 +79,9 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
                     date.hour !== 0 || date.minute !== 0 || date.second !== 0;
 
                   return date.toLocaleString(
-                    hasTime ? DateTime.DATETIME_MED : DateTime.DATE_MED
+                    hasTime
+                      ? DateTime.DATETIME_MED_WITH_WEEKDAY
+                      : DateTime.DATE_MED_WITH_WEEKDAY
                   );
                 },
                 label: (item) => {
@@ -95,7 +98,28 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
               max: DateTime.now().toISO(),
               min: min?.toISO(),
               ticks: {
-                autoSkipPadding: 32
+                autoSkipPadding: 32,
+                callback(tickValue, index, ticks) {
+                  if (!relative) {
+                    return tickValue;
+                  }
+                  const tickObject = ticks[index];
+                  if (!tickObject) {
+                    return tickValue;
+                  }
+                  return DateTime.fromMillis(
+                    tickObject.value
+                  ).toRelativeCalendar({
+                    unit:
+                      timeUnit === "day"
+                        ? "days"
+                        : timeUnit === "week"
+                        ? "weeks"
+                        : timeUnit === "month"
+                        ? "months"
+                        : undefined
+                  });
+                }
               },
               time: {
                 unit: timeUnit ?? undefined

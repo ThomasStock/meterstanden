@@ -27,6 +27,7 @@ const Home: NextPage = () => {
           measurements={data}
           min={DateTime.now().minus({ week: 1 })}
           timeUnit="day"
+          relative
         />
         <DailyUseGraph
           title="Dagelijks verbruik laatste maand"
@@ -34,6 +35,7 @@ const Home: NextPage = () => {
           measurements={data}
           min={DateTime.now().minus({ month: 1 })}
           timeUnit="week"
+          relative
         />
         <DailyUseGraph
           title="Dagelijks verbruik sinds begin metingen"
