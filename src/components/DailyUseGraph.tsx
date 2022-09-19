@@ -47,6 +47,11 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
 
   const data = useMemo(() => getUsableData(measurements), [measurements]);
 
+  const suggestedMax = useMemo(
+    () => Math.max(...data.map((data) => data.y)) * 1.2,
+    []
+  );
+
   return (
     <article className="container flex flex-col items-center mb-5 max-w-2xl select-none">
       <Line
@@ -128,7 +133,8 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
             y: {
               type: "linear",
               title: { display: true, text: energyUnit },
-              min: 0
+              min: 0,
+              suggestedMax
             }
           }
         }}
