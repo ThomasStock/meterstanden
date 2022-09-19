@@ -13,8 +13,8 @@ import {
 import "chartjs-adapter-luxon";
 
 import { DateTime, DateTimeUnit } from "luxon";
-import { useMemo } from "react";
-import { Paper } from "@mui/material";
+import { useState } from "react";
+import { Button, ButtonGroup, Paper } from "@mui/material";
 
 Chart.register(
   TimeScale,
@@ -34,23 +34,47 @@ export interface Entry {
 
 interface DailyUseLineProps {
   energyUnit: string;
-  measurements: Entry[];
+  data: Entry[];
+  title: string;
+}
+
+interface TimeScaleOptions {
+  label: string;
   min?: DateTime;
   timeUnit?: DateTimeUnit;
-  title: string;
   relative?: boolean;
 }
+
+const scales: TimeScaleOptions[] = [
+  {
+    label: "Laatste week",
+    min: DateTime.now().minus({ week: 1 }),
+    timeUnit: "day",
+    relative: true
+  },
+  {
+    label: "Laatste maand",
+    min: DateTime.now().minus({ month: 1 }),
+    timeUnit: "week",
+    relative: true
+  },
+  {
+    label: "Sinds eerste meting"
+  }
+];
 
 const red = "rgb(255, 99, 132)";
 
 const DailyUseGraph = (props: DailyUseLineProps) => {
-  const { energyUnit, measurements, min, timeUnit, title, relative } = props;
+  const { energyUnit, data, title } = props;
 
-  const data = useMemo(() => getUsableData(measurements), [measurements]);
+  const [scaleIndex, setScaleIndex] = useState(0);
+  const { min, timeUnit, relative } = scales[scaleIndex] as TimeScaleOptions;
 
-  const suggestedMax = useMemo(
-    () => Math.max(...data.map((data) => data.y)) * 1.2,
-    []
+  console.log("data", data);
+
+  const [suggestedMax] = useState(
+    Math.max(...data.map((data) => data.value)) * 1.2
   );
 
   return (
@@ -146,23 +170,25 @@ const DailyUseGraph = (props: DailyUseLineProps) => {
           datasets: [
             {
               borderColor: red,
-              data
+              data: data.map((entry) => ({ x: entry.date, y: entry.value }))
             }
           ]
         }}
       />
+
+      <ButtonGroup variant="text">
+        {scales.map((scale, index) => (
+          <Button
+            key={index}
+            disabled={index === scaleIndex}
+            onClick={() => setScaleIndex(index)}
+          >
+            {scale.label}
+          </Button>
+        ))}
+      </ButtonGroup>
     </Paper>
   );
 };
 
 export default DailyUseGraph;
-
-const getUsableData = (data: Entry[]) =>
-  data.slice(1).map((entry, index) => {
-    const previous = data[index] as Entry;
-    const daysSincePrevious = entry.date.diff(previous.date).as("days");
-    const usageSincePrevious = entry.value - previous.value;
-    const averageUsagePerDaySincePrevious =
-      usageSincePrevious / daysSincePrevious;
-    return { x: entry.date, y: averageUsagePerDaySincePrevious };
-  });

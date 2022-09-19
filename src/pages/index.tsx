@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-
 import { DateTime } from "luxon";
 import DailyUseGraph, { Entry } from "../components/DailyUseGraph";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button, InputAdornment, MenuItem, TextField } from "@mui/material";
 import Stack from "@mui/material/Stack";
+import getDailyAverages from "../utils/getDailyAverages";
 
 const dummy: Entry[] = [
   { date: DateTime.fromISO("2020-10-01"), value: 16208 },
@@ -15,8 +15,13 @@ const dummy: Entry[] = [
 ];
 
 const Home: NextPage = () => {
-  const [data, setData] = useState(dummy);
-  const lastInput = data[data.length - 1]?.value;
+  const [meterValues, setMeterValues] = useState(dummy);
+  const lastMeterValue = meterValues[meterValues.length - 1]?.value;
+
+  const dailyAverages = useMemo(
+    () => getDailyAverages(meterValues),
+    [meterValues]
+  );
 
   const [input, setInput] = useState<number | undefined>();
 
@@ -39,7 +44,7 @@ const Home: NextPage = () => {
             }}
             value={input ?? ""}
             onChange={(event) => setInput(parseFloat(event.target.value))}
-            placeholder={lastInput ? lastInput.toFixed(1) : ""}
+            placeholder={lastMeterValue ? lastMeterValue.toFixed(1) : ""}
             className="flex-grow flex-shrink"
             inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
           />
@@ -59,8 +64,8 @@ const Home: NextPage = () => {
           <Button
             disabled={!input}
             onClick={() => {
-              setData([
-                ...data,
+              setMeterValues([
+                ...meterValues,
                 { date: DateTime.now(), value: input as number }
               ]);
               setInput(undefined);
@@ -72,25 +77,9 @@ const Home: NextPage = () => {
         </Stack>
 
         <DailyUseGraph
-          title="Dagelijks verbruik laatste week"
+          title="Gemiddeld verbruik/dag"
           energyUnit="kWh"
-          measurements={data}
-          min={DateTime.now().minus({ week: 1 })}
-          timeUnit="day"
-          relative
-        />
-        <DailyUseGraph
-          title="Dagelijks verbruik laatste maand"
-          energyUnit="kWh"
-          measurements={data}
-          min={DateTime.now().minus({ month: 1 })}
-          timeUnit="week"
-          relative
-        />
-        <DailyUseGraph
-          title="Dagelijks verbruik sinds begin metingen"
-          energyUnit="kWh"
-          measurements={data}
+          data={dailyAverages}
         />
       </main>
     </>
