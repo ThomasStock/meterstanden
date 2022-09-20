@@ -29,13 +29,29 @@ export const renderAverageUseTooltipLabel = (
   energyUnit: string
 ) => {
   const date = averages[index]?.date as DateTime;
+  const dateString = date.toLocaleString(DateTime.DATE_SHORT);
+
   const previousDate = averages[index - 1]?.date as DateTime;
+  const previousDateString = previousDate?.toLocaleString(DateTime.DATE_SHORT);
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const usageString = renderUsageAsString(averages[index]!.value, energyUnit);
+
+  if (!previousDate) {
+    return (
+      "Tot " +
+      dateString +
+      " was je verbruik gemiddeld " +
+      usageString +
+      " per dag"
+    );
+  }
 
   return (
     "Tussen " +
-    previousDate.toLocaleString(DateTime.DATE_SHORT) +
+    previousDateString +
     " en " +
-    date.toLocaleString(DateTime.DATE_SHORT) +
+    dateString +
     " was je verbruik gemiddeld " +
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     renderUsageAsString(averages[index]!.value, energyUnit) +
