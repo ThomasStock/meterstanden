@@ -14,6 +14,7 @@ import "chartjs-adapter-luxon";
 import { DateTime, DateTimeUnit } from "luxon";
 import { useState } from "react";
 import { Button, ButtonGroup, Paper } from "@mui/material";
+import { Entry } from "../utils/useAppStore";
 
 Chart.register(
   TimeScale,
@@ -25,11 +26,6 @@ Chart.register(
   Legend,
   Tooltip
 );
-
-export interface Entry {
-  date: DateTime;
-  value: number;
-}
 
 interface GraphProps {
   energyUnit: string;

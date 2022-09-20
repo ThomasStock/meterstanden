@@ -1,4 +1,4 @@
-import { Entry } from "../components/Graph";
+import { Entry } from "./useAppStore";
 
 const getDailyAverages = (meterValues: Entry[]): Entry[] =>
   meterValues.slice(1).map((entry, index) => {
