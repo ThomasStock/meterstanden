@@ -6,6 +6,7 @@ import getDailyAverages from "../utils/getDailyAverages";
 import MeterEntry from "../components/MeterEntry";
 import useAppStore from "../utils/useAppStore";
 import periodsForAverage from "../utils/periodsForAverage";
+import { Paper } from "@mui/material";
 
 const Home: NextPage = () => {
   const { meterValues } = useAppStore();
@@ -23,24 +24,26 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container mx-auto flex flex-col items-center justify-center p-5 max-w-2xl">
-        <MeterEntry />
+      <main className="container mx-auto flex flex-col items-center justify-center max-w-2xl">
+        <Paper className="p-5 m-5" elevation={12}>
+          <MeterEntry />
 
-        <Graph
-          graphKey="averageUsePerDayElectricity"
-          title="Gemiddeld verbruik/dag"
-          energyUnit="kWh"
-          data={dailyAverages}
-          isAverage
-          periods={periodsForAverage}
-        />
+          <Graph
+            graphKey="averageUsePerDayElectricity"
+            title="Gemiddeld verbruik/dag"
+            energyUnit="kWh"
+            data={dailyAverages}
+            isAverage
+            periods={periodsForAverage}
+          />
 
-        <Graph
-          graphKey="totalUseElectricty"
-          title="Meterstand evolutie"
-          energyUnit="kWh"
-          data={meterValues}
-        />
+          <Graph
+            graphKey="totalUseElectricty"
+            title="Meterstand evolutie"
+            energyUnit="kWh"
+            data={meterValues}
+          />
+        </Paper>
       </main>
     </>
   );

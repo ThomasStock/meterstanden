@@ -1,17 +1,22 @@
 import { Stack, TextField, InputAdornment, Button } from "@mui/material";
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import useAppStore from "../utils/useAppStore";
 
 const MeterEntry = () => {
   const { meterValues, addMeterValue } = useAppStore();
 
+  // using useEffect to set initial (current) date to fix SSR
+  useEffect(() => {
+    setInputDate(DateTime.now);
+  }, []);
+
   // This is used as placeholder for the input
   const lastMeterValue = meterValues[meterValues.length - 1]?.value;
 
   const [input, setInput] = useState<number | undefined>();
-  const [inputDate, setInputDate] = useState<DateTime | null>(DateTime.now);
+  const [inputDate, setInputDate] = useState<DateTime | null>(null);
 
   return (
     <Stack direction="row" spacing={2} className="pb-5 container flex">
@@ -28,9 +33,6 @@ const MeterEntry = () => {
       />
 
       <DesktopDatePicker
-        disableFuture
-        minDate={DateTime.now().minus({ year: 10 })}
-        maxDate={DateTime.now()}
         value={inputDate}
         onChange={(newValue) => {
           setInputDate(newValue);
@@ -49,7 +51,6 @@ const MeterEntry = () => {
           });
           setInput(undefined);
         }}
-        variant="outlined"
       >
         Toevoegen
       </Button>

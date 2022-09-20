@@ -2,18 +2,39 @@
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { loggerLink } from "@trpc/client/links/loggerLink";
 import { withTRPC } from "@trpc/next";
-import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import type { AppRouter } from "../server/router";
 import "../styles/globals.css";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { CacheProvider, EmotionCache, ThemeProvider } from "@emotion/react";
+import createEmotionCache from "../mui/createEmotionCache";
+import theme from "../mui/theme";
+import { AppProps } from "next/app";
+import Head from "next/head";
+import { CssBaseline } from "@mui/material";
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
+
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+const MyApp = (props: MyAppProps) => {
+  const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
   return (
-    <LocalizationProvider dateAdapter={AdapterLuxon}>
-      <Component {...pageProps} />
-    </LocalizationProvider>
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <Component {...pageProps} />
+        </LocalizationProvider>
+      </ThemeProvider>
+    </CacheProvider>
   );
 };
 
