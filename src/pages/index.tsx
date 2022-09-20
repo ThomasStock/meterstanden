@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import getDailyAverages from "../utils/getDailyAverages";
 import MeterEntry from "../components/MeterEntry";
 import useAppStore from "../utils/useAppStore";
+import periodsForAverage from "../utils/periodsForAverage";
 
 const Home: NextPage = () => {
   const { meterValues } = useAppStore();
@@ -26,13 +27,16 @@ const Home: NextPage = () => {
         <MeterEntry />
 
         <Graph
+          graphKey="averageUsePerDayElectricity"
           title="Gemiddeld verbruik/dag"
           energyUnit="kWh"
           data={dailyAverages}
           isAverage
+          periods={periodsForAverage}
         />
 
         <Graph
+          graphKey="totalUseElectricty"
           title="Meterstand evolutie"
           energyUnit="kWh"
           data={meterValues}

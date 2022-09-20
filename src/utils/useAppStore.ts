@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+import { DateTime, DateTimeUnit } from "luxon";
 import create from "zustand";
 
 export interface Entry {
@@ -13,15 +13,29 @@ const dummy: Entry[] = [
   { date: DateTime.fromISO("2022-09-14"), value: 20322.3 }
 ];
 
+export interface PeriodOptions {
+  label: string;
+  min?: DateTime;
+  timeUnit?: DateTimeUnit;
+  relative?: boolean;
+}
+
 interface AppStore {
   meterValues: Entry[];
   addMeterValue: (newMeterValues: Entry) => void;
+  selectedPeriods: Map<string, number>;
+  selectPeriod: (graphKey: string, periodIndex: number) => void;
 }
 
 const useAppStore = create<AppStore>((set) => ({
   meterValues: dummy,
   addMeterValue: (newMeterValue: Entry) =>
-    set((state) => ({ meterValues: [...state.meterValues, newMeterValue] }))
+    set((state) => ({ meterValues: [...state.meterValues, newMeterValue] })),
+  selectedPeriods: new Map(),
+  selectPeriod: (graphKey, periodIndex) =>
+    set((state) => ({
+      selectedPeriods: state.selectedPeriods.set(graphKey, periodIndex)
+    }))
 }));
 
 export default useAppStore;
