@@ -15,9 +15,10 @@ const PeriodPicker = (props: PeriodPickerProps) => {
   }
 
   return (
-    <ButtonGroup variant="text">
+    <ButtonGroup variant="outlined" className="mt-5">
       {periods.map((period, index) => (
         <Button
+          size="small"
           key={index}
           disabled={index === selectedPeriodIndex}
           onClick={() => onSelectPeriod(index)}
