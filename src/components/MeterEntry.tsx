@@ -6,8 +6,7 @@ import {
   Box,
   Collapse,
   useMediaQuery,
-  useTheme,
-  CollapseProps
+  useTheme
 } from "@mui/material";
 import { DateTime } from "luxon";
 import { useEffect, useRef, useState } from "react";
@@ -21,8 +20,6 @@ const MeterEntry = () => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  console.log({ isMobile, theme });
 
   // using useEffect to set initial (current) date to fix SSR
   useEffect(() => {
