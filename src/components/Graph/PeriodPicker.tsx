@@ -1,4 +1,4 @@
-import { ButtonGroup, Button, Typography } from "@mui/material";
+import { Typography, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { PeriodOptions } from "../../utils/useAppStore";
 
 interface PeriodPickerProps {
@@ -15,19 +15,25 @@ const PeriodPicker = (props: PeriodPickerProps) => {
   }
 
   return (
-    <ButtonGroup variant="contained" size="small" color="secondary" fullWidth>
+    <ToggleButtonGroup
+      size="small"
+      color="secondary"
+      value={selectedPeriodIndex}
+      onChange={(_, newValue: number) => onSelectPeriod(newValue)}
+      exclusive
+      fullWidth
+    >
       {periods.map((period, index) => (
-        <Button
-          key={index}
-          disabled={index === selectedPeriodIndex}
-          onClick={() => onSelectPeriod(index)}
-        >
-          <Typography variant="caption" fontSize="0.8em">
+        <ToggleButton key={index} value={index}>
+          <Typography
+            variant="caption"
+            fontSize={{ xs: "0.7em", sm: "0.8em", md: "default" }}
+          >
             {period.label}
           </Typography>
-        </Button>
+        </ToggleButton>
       ))}
-    </ButtonGroup>
+    </ToggleButtonGroup>
   );
 };
 

@@ -100,23 +100,27 @@ const MeterEntry = () => {
           />
         </Stack>
 
-        {isMobile ? (
-          <Collapse
-            in={!isNaN(meterValue)}
-            orientation={"vertical"}
-            collapsedSize={0}
-          >
-            {renderButton()}
-          </Collapse>
-        ) : (
-          <Collapse
-            in={!isNaN(meterValue)}
-            orientation={"horizontal"}
-            collapsedSize={0}
-          >
-            {renderButton()}
-          </Collapse>
-        )}
+        {
+          // We need to completely rerender the collapse
+          //  when changing orientation to deal with some artifacts
+          isMobile ? (
+            <Collapse
+              in={!isNaN(meterValue)}
+              orientation={"vertical"}
+              collapsedSize={0}
+            >
+              {renderButton()}
+            </Collapse>
+          ) : (
+            <Collapse
+              in={!isNaN(meterValue)}
+              orientation={"horizontal"}
+              collapsedSize={0}
+            >
+              {renderButton()}
+            </Collapse>
+          )
+        }
       </Stack>
     </form>
   );
