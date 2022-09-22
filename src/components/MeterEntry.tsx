@@ -6,7 +6,8 @@ import {
   Box,
   Collapse,
   useMediaQuery,
-  useTheme
+  useTheme,
+  CollapseProps
 } from "@mui/material";
 import { DateTime } from "luxon";
 import { useEffect, useRef, useState } from "react";
@@ -31,12 +32,12 @@ const MeterEntry = () => {
   // This is used as placeholder for the input
   const lastMeterValue = meterValues[meterValues.length - 1]?.value;
 
-  const [input, setInput] = useState<string | undefined>();
-  const meterValue = input ? parseFloat(input) : undefined;
+  const [input, setInput] = useState("");
+  const meterValue = parseFloat(input);
 
   const [inputDate, setInputDate] = useState<DateTime | null>(null);
 
-  const isValid = meterValue && meterValue !== NaN && inputDate?.isValid;
+  const isValid = meterValue && !isNaN(meterValue) && inputDate?.isValid;
 
   const renderButton = () => (
     <Button
@@ -52,7 +53,7 @@ const MeterEntry = () => {
             date: inputDate as DateTime,
             value: meterValue
           });
-          setInput(undefined);
+          setInput("");
         }
       }}
     >
@@ -77,11 +78,12 @@ const MeterEntry = () => {
                 <InputAdornment position="start">kWh</InputAdornment>
               )
             }}
-            value={input ?? ""}
+            value={input}
             onChange={(event) => setInput(event.target.value)}
             placeholder={lastMeterValue ? lastMeterValue.toFixed(1) : ""}
             inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
             fullWidth
+            error={input.length ? isNaN(meterValue) : false}
           />
 
           <DesktopDatePicker
@@ -99,11 +101,19 @@ const MeterEntry = () => {
         </Stack>
 
         {isMobile ? (
-          <Collapse in={!!input} orientation={"vertical"} collapsedSize={0}>
+          <Collapse
+            in={!isNaN(meterValue)}
+            orientation={"vertical"}
+            collapsedSize={0}
+          >
             {renderButton()}
           </Collapse>
         ) : (
-          <Collapse in={!!input} orientation={"horizontal"} collapsedSize={0}>
+          <Collapse
+            in={!isNaN(meterValue)}
+            orientation={"horizontal"}
+            collapsedSize={0}
+          >
             {renderButton()}
           </Collapse>
         )}

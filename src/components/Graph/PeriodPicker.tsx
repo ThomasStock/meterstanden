@@ -15,7 +15,7 @@ const PeriodPicker = (props: PeriodPickerProps) => {
   }
 
   return (
-    <ButtonGroup variant="contained" size="small" fullWidth>
+    <ButtonGroup variant="contained" size="small" color="secondary" fullWidth>
       {periods.map((period, index) => (
         <Button
           key={index}
