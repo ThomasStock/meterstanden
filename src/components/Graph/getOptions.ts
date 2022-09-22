@@ -1,6 +1,8 @@
+import { Prisma } from "@prisma/client";
 import { ChartOptions } from "chart.js";
 import { DateTime } from "luxon";
-import { Entry, PeriodOptions } from "../../utils/useAppStore";
+import { MeterValue } from "~/server/routers/meterValue";
+import { PeriodOptions } from "../../utils/useAppStore";
 import {
   renderDate,
   renderUsageAsString,
@@ -12,7 +14,7 @@ const blue = "rgb(0, 168, 255)";
 
 export interface Options {
   isAverage?: boolean;
-  data: Entry[];
+  data: Omit<MeterValue, "id">[];
   energyUnit: string;
   title: string;
 }
@@ -26,7 +28,9 @@ const getOptions = ({
   min,
   timeUnit
 }: Options & Omit<PeriodOptions, "label">): ChartOptions<"line"> => {
-  const suggestedMax = Math.max(...data.map((data) => data.value)) * 1.2;
+  const values = data.map((data) => data.value);
+
+  const suggestedMax = Prisma.Decimal.max(...values).mul(1.2);
 
   return {
     elements: {
@@ -103,7 +107,7 @@ const getOptions = ({
         type: "linear",
         title: { display: true, text: energyUnit },
         min: isAverage ? 0 : undefined,
-        suggestedMax: isAverage ? suggestedMax : undefined
+        suggestedMax: isAverage ? suggestedMax.toNumber() : undefined
       }
     }
   };

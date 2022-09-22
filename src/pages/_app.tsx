@@ -9,6 +9,28 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { CssBaseline } from "@mui/material";
 
+import superjson from "superjson";
+import { DateTime } from "luxon";
+import { Prisma } from "@prisma/client";
+
+superjson.registerCustom<DateTime, string>(
+  {
+    isApplicable: (v): v is DateTime => DateTime.isDateTime(v),
+    serialize: (v) => v.toJSON(),
+    deserialize: (v) => DateTime.fromISO(v)
+  },
+  "DateTime"
+);
+
+superjson.registerCustom<Prisma.Decimal, string>(
+  {
+    isApplicable: (v): v is Prisma.Decimal => Prisma.Decimal.isDecimal(v),
+    serialize: (v) => v.toJSON(),
+    deserialize: (v) => new Prisma.Decimal(v)
+  },
+  "decimal.js"
+);
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 

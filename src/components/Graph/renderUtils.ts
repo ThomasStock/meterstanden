@@ -1,5 +1,6 @@
+import { Prisma } from "@prisma/client";
 import { DateTime, DateTimeUnit } from "luxon";
-import { Entry } from "../../utils/useAppStore";
+import { MeterValue } from "~/server/routers/meterValue";
 
 export const renderDate = (date: DateTime) => {
   const hasTime = date.hour !== 0 || date.minute !== 0 || date.second !== 0;
@@ -24,7 +25,7 @@ export const renderRelativeDate = (millis: number, timeUnit?: DateTimeUnit) =>
   });
 
 export const renderAverageUseTooltipLabel = (
-  averages: Entry[],
+  averages: Omit<MeterValue, "id">[],
   index: number,
   energyUnit: string
 ) => {
@@ -59,5 +60,7 @@ export const renderAverageUseTooltipLabel = (
   );
 };
 
-export const renderUsageAsString = (usage: number, energyUnit: string) =>
-  usage.toFixed(2) + " " + energyUnit;
+export const renderUsageAsString = (
+  usage: Prisma.Decimal,
+  energyUnit: string
+) => usage.toFixed(2) + " " + energyUnit;

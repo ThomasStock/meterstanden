@@ -12,7 +12,7 @@ datasource db {
 
 model MeterValue {
   id    String @id @default(uuid())
-  date DateTime
+  date  DateTime
   value Decimal
   // To return `Date`s intact through the API we use transformers
   // https://trpc.io/docs/data-transformers

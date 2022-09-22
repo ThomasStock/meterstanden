@@ -1,42 +1,23 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Graph from "../components/Graph";
-import { Fragment, useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import getDailyAverages from "../utils/getDailyAverages";
 import MeterEntry from "../components/MeterEntry";
-import useAppStore from "../utils/useAppStore";
 import periodsForAverage from "../utils/periodsForAverage";
-import { Box, Divider, Paper, PaperProps } from "@mui/material";
+import { Box, Divider, Paper, PaperProps, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
-import Link from "next/link";
 import { trpc } from "~/utils/trpc";
 
 const Home: NextPage = () => {
-  const { meterValues } = useAppStore();
+  const meterValueQuery = trpc.meterValue.list.useQuery();
+  const meterValues = meterValueQuery.data;
 
-  const utils = trpc.useContext();
-  const postsQuery = trpc.post.list.useInfiniteQuery(
-    {
-      limit: 5
-    },
-    {
-      getPreviousPageParam(lastPage) {
-        return lastPage.nextCursor;
-      }
+  const dailyAverages = useMemo(() => {
+    if (meterValues && meterValues.length) {
+      return getDailyAverages(meterValues);
     }
-  );
-
-  useEffect(() => {
-    const allPosts = postsQuery.data?.pages.flatMap((page) => page.items) ?? [];
-    for (const { id } of allPosts) {
-      void utils.post.byId.prefetch({ id });
-    }
-  }, [postsQuery.data, utils]);
-
-  const dailyAverages = useMemo(
-    () => getDailyAverages(meterValues),
-    [meterValues]
-  );
+  }, [meterValues]);
 
   return (
     <>
@@ -51,36 +32,32 @@ const Home: NextPage = () => {
           <MeterEntry />
         </RootPaper>
 
-        {postsQuery.data?.pages.map((page, index) => (
-          <Fragment key={page.items[0]?.id || index}>
-            {page.items.map((item) => (
-              <article key={item.id}>
-                <h3>{item.title}</h3>
-                <Link href={`/post/${item.id}`}>
-                  <a>View more</a>
-                </Link>
-              </article>
-            ))}
-          </Fragment>
-        ))}
-
         <Box>
           <RootPaper>
             <Stack direction={"column"} divider={<Divider />} spacing={2}>
-              <Graph
-                graphKey="averageUsePerDayElectricity"
-                title="Gemiddeld verbruik/dag"
-                energyUnit="kWh"
-                data={dailyAverages}
-                isAverage
-                periods={periodsForAverage}
-              />
-              <Graph
-                graphKey="totalUseElectricty"
-                title="Meterstand evolutie"
-                energyUnit="kWh"
-                data={meterValues}
-              />
+              {dailyAverages && dailyAverages.length ? (
+                <Graph
+                  graphKey="averageUsePerDayElectricity"
+                  title="Gemiddeld verbruik/dag"
+                  energyUnit="kWh"
+                  data={dailyAverages}
+                  isAverage
+                  periods={periodsForAverage}
+                />
+              ) : (
+                <Typography>
+                  Voeg minstens 2 meterstanden toe om je gemiddeld verbruik per
+                  dag te zien
+                </Typography>
+              )}
+              {meterValues && meterValues.length ? (
+                <Graph
+                  graphKey="totalUseElectricty"
+                  title="Meterstand evolutie"
+                  energyUnit="kWh"
+                  data={meterValues}
+                />
+              ) : null}
             </Stack>
           </RootPaper>
         </Box>

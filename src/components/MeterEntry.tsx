@@ -11,10 +11,18 @@ import {
 import { DateTime } from "luxon";
 import { useEffect, useRef, useState } from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import useAppStore from "../utils/useAppStore";
+import { trpc } from "~/utils/trpc";
 
 const MeterEntry = () => {
-  const { meterValues, addMeterValue } = useAppStore();
+  const utils = trpc.useContext();
+  const meterValueQuery = trpc.meterValue.list.useQuery();
+  const meterValues = meterValueQuery.data;
+
+  const addMeterValue = trpc.meterValue.add.useMutation({
+    onSuccess: () => {
+      utils.meterValue.list.invalidate();
+    }
+  });
 
   const containerRef = useRef(null);
 
@@ -27,7 +35,7 @@ const MeterEntry = () => {
   }, []);
 
   // This is used as placeholder for the input
-  const lastMeterValue = meterValues[meterValues.length - 1]?.value;
+  const lastMeterValue = meterValues?.[meterValues.length - 1]?.value;
 
   const [input, setInput] = useState("");
   const meterValue = parseFloat(input);
@@ -44,29 +52,26 @@ const MeterEntry = () => {
       sx={{ height: "inherit" }}
       disabled={!isValid}
       fullWidth={isMobile}
-      onClick={() => {
-        if (isValid) {
-          addMeterValue({
-            date: inputDate as DateTime,
-            value: meterValue
-          });
-          setInput("");
-        }
-      }}
     >
       Toevoegen
     </Button>
   );
 
   return (
-    <form>
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (isValid) {
+          await addMeterValue.mutateAsync({
+            date: inputDate.toJSDate(),
+            value: meterValue
+          });
+          setInput("");
+        }
+      }}
+    >
       <h4>Huidige meterstand ingeven</h4>
-
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={3}
-        ref={containerRef}
-      >
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
         <Stack direction={"row"} flexGrow={1} justifyContent="space-around">
           <TextField
             autoComplete="off"
@@ -77,7 +82,7 @@ const MeterEntry = () => {
             }}
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder={lastMeterValue ? lastMeterValue.toFixed(1) : ""}
+            placeholder={lastMeterValue ? lastMeterValue.toFixed?.(1) : ""}
             inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
             fullWidth
             error={input.length ? isNaN(meterValue) : false}
@@ -90,7 +95,10 @@ const MeterEntry = () => {
             }}
             inputFormat="dd/MM/yyyy"
             renderInput={(params) => (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center" }}
+                ref={containerRef}
+              >
                 {params.InputProps?.endAdornment}
               </Box>
             )}
