@@ -4,7 +4,6 @@ import { loggerLink } from "@trpc/client/links/loggerLink";
 import { withTRPC } from "@trpc/next";
 import superjson from "superjson";
 import type { AppRouter } from "../server/router";
-import "../styles/globals.css";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { CacheProvider, EmotionCache, ThemeProvider } from "@emotion/react";

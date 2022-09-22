@@ -1,11 +1,27 @@
-import { Stack, TextField, InputAdornment, Button } from "@mui/material";
+import {
+  Stack,
+  TextField,
+  InputAdornment,
+  Button,
+  Box,
+  Collapse,
+  useMediaQuery,
+  useTheme
+} from "@mui/material";
 import { DateTime } from "luxon";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import useAppStore from "../utils/useAppStore";
 
 const MeterEntry = () => {
   const { meterValues, addMeterValue } = useAppStore();
+
+  const containerRef = useRef(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  console.log({ isMobile, theme });
 
   // using useEffect to set initial (current) date to fix SSR
   useEffect(() => {
@@ -15,46 +31,84 @@ const MeterEntry = () => {
   // This is used as placeholder for the input
   const lastMeterValue = meterValues[meterValues.length - 1]?.value;
 
-  const [input, setInput] = useState<number | undefined>();
+  const [input, setInput] = useState<string | undefined>();
+  const meterValue = input ? parseFloat(input) : undefined;
+
   const [inputDate, setInputDate] = useState<DateTime | null>(null);
 
-  return (
-    <Stack direction="row" spacing={2} className="pb-5 container flex">
-      <TextField
-        autoComplete="off"
-        InputProps={{
-          endAdornment: <InputAdornment position="start">kWh</InputAdornment>
-        }}
-        value={input ?? ""}
-        onChange={(event) => setInput(parseFloat(event.target.value))}
-        placeholder={lastMeterValue ? lastMeterValue.toFixed(1) : ""}
-        className="flex-grow flex-shrink"
-        inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
-      />
+  const isValid = meterValue && meterValue !== NaN && inputDate?.isValid;
 
-      <DesktopDatePicker
-        value={inputDate}
-        onChange={(newValue) => {
-          setInputDate(newValue);
-        }}
-        inputFormat="dd/MM/yyyy"
-        renderInput={(params) => <TextField {...params} />}
-        className="flex-shrink-0"
-      />
-
-      <Button
-        disabled={!input || !inputDate?.isValid}
-        onClick={() => {
+  const renderButton = () => (
+    <Button
+      type="submit"
+      variant="contained"
+      size="large"
+      sx={{ height: "inherit" }}
+      disabled={!isValid}
+      fullWidth={isMobile}
+      onClick={() => {
+        if (isValid) {
           addMeterValue({
             date: inputDate as DateTime,
-            value: input as number
+            value: meterValue
           });
           setInput(undefined);
-        }}
+        }
+      }}
+    >
+      Toevoegen
+    </Button>
+  );
+
+  return (
+    <form>
+      <h4>Huidige meterstand ingeven</h4>
+
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={3}
+        ref={containerRef}
       >
-        Toevoegen
-      </Button>
-    </Stack>
+        <Stack direction={"row"} flexGrow={1} justifyContent="space-around">
+          <TextField
+            autoComplete="off"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">kWh</InputAdornment>
+              )
+            }}
+            value={input ?? ""}
+            onChange={(event) => setInput(event.target.value)}
+            placeholder={lastMeterValue ? lastMeterValue.toFixed(1) : ""}
+            inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
+            fullWidth
+          />
+
+          <DesktopDatePicker
+            value={inputDate}
+            onChange={(newValue) => {
+              setInputDate(newValue);
+            }}
+            inputFormat="dd/MM/yyyy"
+            renderInput={(params) => (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                {params.InputProps?.endAdornment}
+              </Box>
+            )}
+          />
+        </Stack>
+
+        {isMobile ? (
+          <Collapse in={!!input} orientation={"vertical"} collapsedSize={0}>
+            {renderButton()}
+          </Collapse>
+        ) : (
+          <Collapse in={!!input} orientation={"horizontal"} collapsedSize={0}>
+            {renderButton()}
+          </Collapse>
+        )}
+      </Stack>
+    </form>
   );
 };
 

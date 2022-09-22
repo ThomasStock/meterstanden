@@ -11,7 +11,7 @@ import {
   Tooltip
 } from "chart.js";
 import "chartjs-adapter-luxon";
-import { Paper } from "@mui/material";
+import { Stack } from "@mui/material";
 import useAppStore, { PeriodOptions } from "../../utils/useAppStore";
 import PeriodPicker from "./PeriodPicker";
 import getOptions, { Options } from "./getOptions";
@@ -47,10 +47,7 @@ const Graph = (props: GraphProps) => {
   const options = getOptions({ ...(periodOptions ?? {}), ...props });
 
   return (
-    <Paper
-      elevation={2}
-      className="container flex flex-col items-center mb-5 p-3 select-none"
-    >
+    <Stack spacing={1}>
       <Line
         options={options}
         data={{
@@ -68,7 +65,7 @@ const Graph = (props: GraphProps) => {
         periods={periods}
         selectedPeriodIndex={selectedPeriodIndex}
       />
-    </Paper>
+    </Stack>
   );
 };
 
