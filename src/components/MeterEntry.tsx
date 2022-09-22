@@ -12,6 +12,7 @@ import { DateTime } from "luxon";
 import { useEffect, useRef, useState } from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { trpc } from "~/utils/trpc";
+import { Prisma } from "@prisma/client";
 
 const MeterEntry = () => {
   const utils = trpc.useContext();
@@ -34,15 +35,18 @@ const MeterEntry = () => {
     setInputDate(DateTime.now);
   }, []);
 
-  // This is used as placeholder for the input
-  const lastMeterValue = meterValues?.[meterValues.length - 1]?.value;
-
   const [input, setInput] = useState("");
   const meterValue = parseFloat(input);
 
   const [inputDate, setInputDate] = useState<DateTime | null>(null);
 
   const isValid = meterValue && !isNaN(meterValue) && inputDate?.isValid;
+
+  // This is used as placeholder for the input
+  const biggestMeterValue = Prisma.Decimal.max(
+    ...(meterValues?.map((v) => v.value) ?? []),
+    meterValue
+  );
 
   const renderButton = () => (
     <Button
@@ -82,7 +86,9 @@ const MeterEntry = () => {
             }}
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder={lastMeterValue ? lastMeterValue.toFixed?.(1) : ""}
+            placeholder={
+              biggestMeterValue ? biggestMeterValue.toFixed?.(1) : ""
+            }
             inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
             fullWidth
             error={input.length ? isNaN(meterValue) : false}
