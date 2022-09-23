@@ -8,6 +8,7 @@ import periodsForAverage from "../utils/periodsForAverage";
 import { Box, Divider, Paper, PaperProps, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import { trpc } from "~/utils/trpc";
+import DevTools from "~/components/DevTools";
 
 const Home: NextPage = () => {
   const meterValueQuery = trpc.meterValue.list.useQuery();
@@ -32,35 +33,36 @@ const Home: NextPage = () => {
           <MeterEntry />
         </RootPaper>
 
-        <Box>
-          <RootPaper>
-            <Stack direction={"column"} divider={<Divider />} spacing={2}>
-              {dailyAverages && dailyAverages.length ? (
-                <Graph
-                  graphKey="averageUsePerDayElectricity"
-                  title="Gemiddeld verbruik/dag"
-                  energyUnit="kWh"
-                  data={dailyAverages}
-                  isAverage
-                  periods={periodsForAverage}
-                />
-              ) : (
-                <Typography>
-                  Voeg minstens 2 meterstanden toe om je gemiddeld verbruik per
-                  dag te zien
-                </Typography>
-              )}
-              {meterValues && meterValues.length ? (
-                <Graph
-                  graphKey="totalUseElectricty"
-                  title="Meterstand evolutie"
-                  energyUnit="kWh"
-                  data={meterValues}
-                />
-              ) : null}
-            </Stack>
-          </RootPaper>
-        </Box>
+        <RootPaper>
+          <Stack direction={"column"} divider={<Divider />} spacing={2}>
+            {dailyAverages && dailyAverages.length ? (
+              <Graph
+                graphKey="averageUsePerDayElectricity"
+                title="Gemiddeld verbruik/dag"
+                energyUnit="kWh"
+                data={dailyAverages}
+                isAverage
+                periods={periodsForAverage}
+              />
+            ) : (
+              <Typography>
+                Voeg minstens 2 meterstanden toe om je gemiddeld verbruik per
+                dag te zien
+              </Typography>
+            )}
+            {meterValues && meterValues.length ? (
+              <Graph
+                graphKey="totalUseElectricty"
+                title="Meterstand evolutie"
+                energyUnit="kWh"
+                data={meterValues}
+              />
+            ) : null}
+          </Stack>
+        </RootPaper>
+        <RootPaper>
+          <DevTools />
+        </RootPaper>
       </Stack>
     </>
   );
@@ -69,9 +71,11 @@ const Home: NextPage = () => {
 export default Home;
 
 const RootPaper = (props: PaperProps) => (
-  <Paper
-    sx={{ mx: { xs: 2, sm: 5 }, p: { xs: 3, sm: 5 } }}
-    elevation={12}
-    {...props}
-  />
+  <Box>
+    <Paper
+      sx={{ mx: { xs: 2, sm: 5 }, p: { xs: 3, sm: 5 } }}
+      elevation={12}
+      {...props}
+    />{" "}
+  </Box>
 );

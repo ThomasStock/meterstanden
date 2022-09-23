@@ -9,7 +9,7 @@ import {
   useTheme
 } from "@mui/material";
 import { DateTime } from "luxon";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { trpc } from "~/utils/trpc";
 import { Prisma } from "@prisma/client";
@@ -55,7 +55,7 @@ const MeterEntry = () => {
       variant="contained"
       size="large"
       sx={{ height: "inherit" }}
-      disabled={!isValid}
+      disabled={!isValid || addMeterValue.isLoading}
       fullWidth={isMobile}
     >
       Toevoegen
@@ -86,6 +86,7 @@ const MeterEntry = () => {
               )
             }}
             value={input}
+            disabled={addMeterValue.isLoading}
             onChange={(event) => setInput(event.target.value)}
             placeholder={
               biggestMeterValue ? biggestMeterValue.toFixed?.(1) : ""
@@ -101,6 +102,7 @@ const MeterEntry = () => {
               setInputDate(newValue);
             }}
             inputFormat="dd/MM/yyyy"
+            disabled={addMeterValue.isLoading}
             renderInput={(params) => (
               <Box
                 sx={{ display: "flex", alignItems: "center" }}
