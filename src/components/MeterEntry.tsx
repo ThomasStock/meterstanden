@@ -36,17 +36,22 @@ const MeterEntry = () => {
   }, []);
 
   const [input, setInput] = useState("");
-  const meterValue = parseFloat(input);
+  let meterValue = new Prisma.Decimal(NaN);
+  try {
+    meterValue = new Prisma.Decimal(input);
+  } catch {}
 
   const [inputDate, setInputDate] = useState<DateTime | null>(null);
 
-  const isValid = meterValue && !isNaN(meterValue) && inputDate?.isValid;
+  const isValid = meterValue && !meterValue.isNaN() && inputDate?.isValid;
 
   // This is used as placeholder for the input
   const biggestMeterValue = Prisma.Decimal.max(
     ...(meterValues?.map((v) => v.value) ?? []),
-    meterValue
+    meterValue.isNaN() ? 0 : meterValue
   );
+
+  console.log("bugger", biggestMeterValue);
 
   const renderButton = () => (
     <Button
