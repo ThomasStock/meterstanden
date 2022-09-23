@@ -23,7 +23,7 @@ const DevTools = () => {
     !deleteLastQuery.isIdle || !deleteAllQuery.isIdle || !loadDemoData.isIdle;
 
   return (
-    <Stack>
+    <Stack spacing={0}>
       <h4>Dev tools (Gebruik dit maar hoor)</h4>
 
       <Button
@@ -53,6 +53,18 @@ const DevTools = () => {
       >
         Load demo data
       </Button>
+
+      <b>Todo prios</b>
+      <ol>
+        <li>Store data per device</li>
+        <li>grid/table data entry/edit/delete</li>
+        <li>better date picking (of vervangen door link naar grid edit)</li>
+        <li>Share readonly link</li>
+        <li>Create personal link via mail (to add data on other devices)</li>
+        <li>Localization</li>
+        <li>Gas/Water tabs</li>
+        <li>Zonnepaneel shit bekijken</li>
+      </ol>
     </Stack>
   );
 };
