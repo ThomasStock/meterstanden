@@ -9,7 +9,7 @@ import {
   useTheme
 } from "@mui/material";
 import { DateTime } from "luxon";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { trpc } from "~/utils/trpc";
 import { Prisma } from "@prisma/client";
@@ -24,8 +24,6 @@ const MeterEntry = () => {
       utils.meterValue.list.invalidate();
     }
   });
-
-  const containerRef = useRef(null);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -73,7 +71,7 @@ const MeterEntry = () => {
         if (isValid) {
           await addMeterValue.mutateAsync({
             date: inputDate.toJSDate(),
-            value: meterValue
+            value: meterValue.toNumber()
           });
           setInput("");
         }
@@ -96,7 +94,7 @@ const MeterEntry = () => {
             }
             inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
             fullWidth
-            error={input.length ? isNaN(meterValue) : false}
+            error={input.length ? meterValue.isNaN() : false}
           />
 
           <DesktopDatePicker
@@ -108,7 +106,7 @@ const MeterEntry = () => {
             renderInput={(params) => (
               <Box
                 sx={{ display: "flex", alignItems: "center" }}
-                ref={containerRef}
+                ref={params.inputRef}
               >
                 {params.InputProps?.endAdornment}
               </Box>
@@ -121,7 +119,7 @@ const MeterEntry = () => {
           //  when changing orientation to deal with some artifacts
           isMobile ? (
             <Collapse
-              in={!isNaN(meterValue)}
+              in={!meterValue.isNaN()}
               orientation={"vertical"}
               collapsedSize={0}
             >
@@ -129,7 +127,7 @@ const MeterEntry = () => {
             </Collapse>
           ) : (
             <Collapse
-              in={!isNaN(meterValue)}
+              in={!meterValue.isNaN()}
               orientation={"horizontal"}
               collapsedSize={0}
             >

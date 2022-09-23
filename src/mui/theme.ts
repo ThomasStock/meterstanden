@@ -1,13 +1,15 @@
 import { createTheme } from "@mui/material/styles";
 
 // Create a theme instance.
+// https://www.schemecolor.com/spiritual-energy.php
 const theme = createTheme({
   palette: {
     background: {
-      default: "#63CFEA"
+      default: "#3DA6AD"
     },
-    primary: { main: "#20AF24" },
-    secondary: { main: "#009CD1" }
+    primary: { main: "#3da6ad" },
+    secondary: { main: "#E8915F" },
+    text: { primary: "#00777e", secondary: "#DDD0B1" }
   }
 });
 
