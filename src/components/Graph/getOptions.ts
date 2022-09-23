@@ -58,7 +58,7 @@ const getOptions = ({
             if (!tooltipItem) {
               return "";
             }
-            const date = (tooltipItem.raw as { date: DateTime }).date;
+            const date = (tooltipItem.raw as { x: DateTime }).x;
 
             if (!isAverage) {
               return renderDate(date);
