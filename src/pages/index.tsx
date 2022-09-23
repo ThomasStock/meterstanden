@@ -27,8 +27,13 @@ const Home: NextPage = () => {
         <meta name="description" content="Analoge meterstanden opvolgen" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <Stack direction={"column"} spacing={5} sx={{ my: 5 }}>
+      <Stack
+        direction={"column"}
+        spacing={{ xs: 2, sm: 5 }}
+        sx={{ m: "auto", my: { xs: 2, sm: 5 } }}
+        maxWidth="lg"
+        alignSelf={"center"}
+      >
         <RootPaper>
           <MeterEntry />
         </RootPaper>
