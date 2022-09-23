@@ -39,25 +39,19 @@ export const renderAverageUseTooltipLabel = (
   const usageString = renderUsageAsString(averages[index]!.value, energyUnit);
 
   if (!previousDate) {
-    return (
-      "Tot " +
-      dateString +
-      " was je verbruik gemiddeld " +
-      usageString +
-      " per dag"
-    );
+    return [
+      "Tot " + dateString + " was je verbruik",
+      "gemiddeld " + usageString + " per dag"
+    ];
   }
 
-  return (
-    "Tussen " +
-    previousDateString +
-    " en " +
-    dateString +
-    " was je verbruik gemiddeld " +
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    renderUsageAsString(averages[index]!.value, energyUnit) +
-    " per dag"
-  );
+  return [
+    "Tussen " + previousDateString + " en " + dateString + " was",
+    "je verbruik gemiddeld " +
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      renderUsageAsString(averages[index]!.value, energyUnit) +
+      " per dag"
+  ];
 };
 
 export const renderUsageAsString = (
