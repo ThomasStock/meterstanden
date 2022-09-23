@@ -39,7 +39,8 @@ const Graph = (props: GraphProps) => {
 
   // For the button bar where you can select "last day, last week, etc"
   const { selectedPeriods, selectPeriod } = useAppStore();
-  const selectedPeriodIndex = selectedPeriods.get(graphKey) ?? 0;
+  const selectedPeriodIndex =
+    selectedPeriods.get(graphKey) ?? (periods ? periods.length - 1 : 0);
   const handleSelectPeriod = (newPeriodIndex: number) =>
     selectPeriod(graphKey, newPeriodIndex);
 
