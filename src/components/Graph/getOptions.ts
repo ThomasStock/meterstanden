@@ -58,7 +58,7 @@ const getOptions = ({
             if (!tooltipItem) {
               return "";
             }
-            const date = (tooltipItem.raw as { x: DateTime }).x;
+            const date = (tooltipItem.raw as { date: DateTime }).date;
 
             if (!isAverage) {
               return renderDate(date);
@@ -100,7 +100,8 @@ const getOptions = ({
           }
         },
         time: {
-          unit: timeUnit ?? undefined
+          unit: timeUnit ?? undefined,
+          minUnit: "day"
         }
       },
       y: {
