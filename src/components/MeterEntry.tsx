@@ -72,6 +72,7 @@ const MeterEntry = () => {
             value: meterValue.toNumber()
           });
           setInput("");
+          setInputDate(DateTime.now());
         }
       }}
     >
