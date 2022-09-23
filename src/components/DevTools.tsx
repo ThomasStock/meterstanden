@@ -24,7 +24,8 @@ const DevTools = () => {
 
   return (
     <Stack>
-      <h3>Dev tools</h3>
+      <h4>Dev tools (Gebruik dit maar hoor)</h4>
+
       <Button
         onClick={async () => {
           await deleteLastQuery.mutateAsync();
