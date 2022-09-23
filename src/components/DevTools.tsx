@@ -56,11 +56,13 @@ const DevTools = () => {
 
       <b>Todo prios</b>
       <ol>
-        <li>Store data per device</li>
+        <li>Make unique key per device and link data to it</li>
         <li>grid/table data entry/edit/delete</li>
         <li>better date picking (of vervangen door link naar grid edit)</li>
         <li>Share readonly link</li>
-        <li>Create personal link via mail (to add data on other devices)</li>
+        <li>
+          Create personal link via mail (to reuse unique key on other devices)
+        </li>
         <li>Localization</li>
         <li>Gas/Water tabs</li>
         <li>Zonnepaneel shit bekijken</li>
