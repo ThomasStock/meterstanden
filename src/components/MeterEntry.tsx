@@ -49,8 +49,6 @@ const MeterEntry = () => {
     meterValue.isNaN() ? 0 : meterValue
   );
 
-  console.log("bugger", biggestMeterValue);
-
   const renderButton = () => (
     <Button
       type="submit"
