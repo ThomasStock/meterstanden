@@ -9,10 +9,13 @@ import { Box, Divider, Paper, PaperProps, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import { trpc } from "~/utils/trpc";
 import DevTools from "~/components/DevTools";
+import useUserService from "~/users/useUserService";
 
 const Home: NextPage = () => {
   const meterValueQuery = trpc.meterValue.list.useQuery();
   const meterValues = meterValueQuery.data;
+
+  const userService = useUserService();
 
   const dailyAverages = useMemo(() => {
     if (meterValues && meterValues.length) {
@@ -34,6 +37,9 @@ const Home: NextPage = () => {
         maxWidth="lg"
         alignSelf={"center"}
       >
+        <Typography variant="caption" color="GrayText">
+          <>Your unique key is: {userService.key}</>
+        </Typography>
         <RootPaper>
           <MeterEntry />
         </RootPaper>
