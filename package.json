@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "devlive": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
+    "postinstall": "npm run db:generate",
+    "db:generate": "prisma generate",
     "db:push": "prisma db push",
+    "db:start": "colima start && docker start meters",
+    "db:stop": "colima stop",
     "docker:run": "docker run --name meters -p 5432:5432 -e POSTGRES_PASSWORD=meterstanden -d postgres"
   },
   "dependencies": {

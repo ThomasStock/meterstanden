@@ -4,5 +4,11 @@
     "project": "./tsconfig.json"
   },
   "plugins": ["@typescript-eslint"],
-  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"]
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  "rules": {
+    // Pollutes the deps list and makes useEffects unreadable. Up for discussion. - Thomas
+    "react-hooks/exhaustive-deps": "off",
+    // Never helps me, is just annoying.
+    "@typescript-eslint/no-non-null-assertion": "off"
+  }
 }

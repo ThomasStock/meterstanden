@@ -23,10 +23,10 @@ const mapOne = ({
 });
 
 export const meterValueRouter = t.router({
-  list: t.procedure.query(async () => {
+  list: t.procedure.input(z.string()).query(async ({ input: userId }) => {
     const items = await prisma.meterValue.findMany({
       select: defaultMeterValueSelect,
-      where: {},
+      where: { userId },
       orderBy: {
         date: "asc"
       }
@@ -37,7 +37,8 @@ export const meterValueRouter = t.router({
     .input(
       z.object({
         date: z.date(),
-        value: z.number().positive()
+        value: z.number().positive(),
+        userId: z.string()
       })
     )
     .mutation(async ({ input }) => {
@@ -47,26 +48,33 @@ export const meterValueRouter = t.router({
       });
       return mapOne(meterValue);
     }),
-  deleteLastAdded: t.procedure.mutation(async () => {
-    const lastMeterValue = await prisma.meterValue.findFirst({
-      orderBy: { createdAt: "desc" }
-    });
+  deleteLastAdded: t.procedure
+    .input(z.string())
+    .mutation(async ({ input: userId }) => {
+      const lastMeterValue = await prisma.meterValue.findFirst({
+        where: { userId },
+        orderBy: { createdAt: "desc" }
+      });
 
-    if (!lastMeterValue) {
-      return;
-    }
+      if (!lastMeterValue) {
+        return;
+      }
 
-    await prisma.meterValue.delete({ where: { id: lastMeterValue.id } });
-  }),
-  deleteAll: t.procedure.mutation(async () => {
-    await prisma.meterValue.deleteMany();
-  }),
-  loadDemoData: t.procedure.mutation(async () => {
-    await prisma.meterValue.deleteMany();
-    for (const data of demoValues) {
-      await prisma.meterValue.create({ data });
-    }
-  })
+      await prisma.meterValue.delete({ where: { id: lastMeterValue.id } });
+    }),
+  deleteAll: t.procedure
+    .input(z.string())
+    .mutation(async ({ input: userId }) => {
+      await prisma.meterValue.deleteMany({ where: { userId } });
+    }),
+  loadDemoData: t.procedure
+    .input(z.string())
+    .mutation(async ({ input: userId }) => {
+      await prisma.meterValue.deleteMany();
+      for (const data of demoValues) {
+        await prisma.meterValue.create({ data: { ...data, userId } });
+      }
+    })
 });
 
 export type MeterValues = inferProcedureOutput<typeof meterValueRouter["list"]>;

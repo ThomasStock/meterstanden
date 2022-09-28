@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Graph from "../components/Graph";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import getDailyAverages from "../utils/getDailyAverages";
 import MeterEntry from "../components/MeterEntry";
 import periodsForAverage from "../utils/periodsForAverage";
@@ -9,13 +9,15 @@ import { Box, Divider, Paper, PaperProps, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import { trpc } from "~/utils/trpc";
 import DevTools from "~/components/DevTools";
-import useUserService from "~/users/useUserService";
+import UserContext from "~/users/UserContext";
 
 const Home: NextPage = () => {
-  const meterValueQuery = trpc.meterValue.list.useQuery();
-  const meterValues = meterValueQuery.data;
+  const { key } = useContext(UserContext);
 
-  const userService = useUserService();
+  const meterValueQuery = trpc.meterValue.list.useQuery(key!, {
+    enabled: !!key
+  });
+  const meterValues = meterValueQuery.data;
 
   const dailyAverages = useMemo(() => {
     if (meterValues && meterValues.length) {
@@ -37,10 +39,10 @@ const Home: NextPage = () => {
         maxWidth="lg"
         alignSelf={"center"}
       >
-        <Typography variant="caption" color="GrayText">
-          <>Your unique key is: {userService.key}</>
-        </Typography>
         <RootPaper>
+          <Typography variant="caption" color="GrayText">
+            <>Your unique key is: {key}</>
+          </Typography>
           <MeterEntry />
         </RootPaper>
 

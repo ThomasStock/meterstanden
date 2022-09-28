@@ -1,7 +1,11 @@
 import { Stack, Button } from "@mui/material";
+import { useContext } from "react";
+import UserContext from "~/users/UserContext";
 import { trpc } from "~/utils/trpc";
 
 const DevTools = () => {
+  const { key, logOut } = useContext(UserContext);
+
   const utils = trpc.useContext();
   const deleteLastQuery = trpc.meterValue.deleteLastAdded.useMutation({
     onSuccess: () => {
@@ -27,9 +31,19 @@ const DevTools = () => {
       <h4>Dev tools (Gebruik dit maar hoor)</h4>
 
       <Button
+        onClick={() => {
+          logOut();
+        }}
+        disabled={!key}
+      >
+        Clear local user key
+      </Button>
+      <Button
         onClick={async () => {
-          await deleteLastQuery.mutateAsync();
-          deleteLastQuery.reset();
+          if (key) {
+            await deleteLastQuery.mutateAsync(key);
+            deleteLastQuery.reset();
+          }
         }}
         disabled={isQueryRunning}
       >
@@ -37,8 +51,10 @@ const DevTools = () => {
       </Button>
       <Button
         onClick={async () => {
-          await deleteAllQuery.mutateAsync();
-          deleteAllQuery.reset();
+          if (key) {
+            await deleteAllQuery.mutateAsync(key);
+            deleteAllQuery.reset();
+          }
         }}
         disabled={isQueryRunning}
       >
@@ -46,8 +62,10 @@ const DevTools = () => {
       </Button>
       <Button
         onClick={async () => {
-          await loadDemoData.mutateAsync();
-          loadDemoData.reset();
+          if (key) {
+            await loadDemoData.mutateAsync(key);
+            loadDemoData.reset();
+          }
         }}
         disabled={isQueryRunning}
       >

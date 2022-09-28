@@ -12,6 +12,8 @@ import { CssBaseline } from "@mui/material";
 import superjson from "superjson";
 import { DateTime } from "luxon";
 import { Prisma } from "@prisma/client";
+import useUser from "~/users/useUser";
+import UserContext from "~/users/UserContext";
 
 superjson.registerCustom<DateTime, string>(
   {
@@ -40,6 +42,9 @@ interface MyAppProps extends AppProps {
 
 const MyApp = (props: MyAppProps) => {
   const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
+
+  const userService = useUser();
+
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -48,7 +53,9 @@ const MyApp = (props: MyAppProps) => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <Component {...pageProps} />
+          <UserContext.Provider value={userService}>
+            <Component {...pageProps} />
+          </UserContext.Provider>
         </LocalizationProvider>
       </ThemeProvider>
     </CacheProvider>

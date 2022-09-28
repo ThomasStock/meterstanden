@@ -9,14 +9,19 @@ import {
   useTheme
 } from "@mui/material";
 import { DateTime } from "luxon";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { trpc } from "~/utils/trpc";
 import { Prisma } from "@prisma/client";
+import UserContext from "~/users/UserContext";
 
 const MeterEntry = () => {
+  const { key } = useContext(UserContext);
+
   const utils = trpc.useContext();
-  const meterValueQuery = trpc.meterValue.list.useQuery();
+  const meterValueQuery = trpc.meterValue.list.useQuery(key!, {
+    enabled: !!key
+  });
   const meterValues = meterValueQuery.data;
 
   const addMeterValue = trpc.meterValue.add.useMutation({
@@ -66,10 +71,11 @@ const MeterEntry = () => {
     <form
       onSubmit={async (e) => {
         e.preventDefault();
-        if (isValid) {
+        if (isValid && key) {
           await addMeterValue.mutateAsync({
             date: inputDate.toJSDate(),
-            value: meterValue.toNumber()
+            value: meterValue.toNumber(),
+            userId: key
           });
           setInput("");
           setInputDate(DateTime.now());

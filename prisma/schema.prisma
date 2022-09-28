@@ -14,9 +14,15 @@ model MeterValue {
   id    String @id @default(uuid())
   date  DateTime
   value Decimal
-  // To return `Date`s intact through the API we use transformers
-  // https://trpc.io/docs/data-transformers
-  // This is unique so it can be used for cursor-based pagination
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  user  User @relation(fields: [userId], references: [key])
+  userId  String
+}
+
+model User {
+  key    String @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  meterValues MeterValue[]
 }
