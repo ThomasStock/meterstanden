@@ -1,13 +1,11 @@
 # Meterstanden
 
-This is a hobby project that I'm building to track electric/gas usage.
-
-I'm building this for fun, to experiment with new technologies. 
-
+This is a hobby project that I'm building to track electric/gas usage.<br/>
+I'm building this for fun, to experiment with new technologies.<br/>
 It is not meant as a showcase for coding best practices.
+<br/><br/>
 
-
-Project is running at https://www.stackhouse.be/
+Project is running at https://www.stackhouse.be/<br/>
 _Startup time is slow due to Vercel: https://www.reddit.com/r/nextjs/comments/qvt7vc/slow_first_load/_
 
 ## Run this project locally
