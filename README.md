@@ -1,8 +1,11 @@
 # Meterstanden
 
 This is a hobby project that I'm building to track electric/gas usage.
+
 I'm building this for fun, to experiment with new technologies. 
+
 It is not meant as a showcase for coding best practices.
+
 
 Project is running at https://www.stackhouse.be/
 _Startup time is slow due to Vercel: https://www.reddit.com/r/nextjs/comments/qvt7vc/slow_first_load/_
