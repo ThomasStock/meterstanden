@@ -74,7 +74,7 @@ const DevTools = () => {
 
       <b>Todo prios</b>
       <ol>
-        <li>Make unique key per device and link data to it</li>
+        <li>[DONE] Make unique key per device and link data to it</li>
         <li>grid/table data entry/edit/delete</li>
         <li>better date picking (of vervangen door link naar grid edit)</li>
         <li>Share readonly link</li>
