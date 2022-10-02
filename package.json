@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:live": "dotenv -e .env.live -- npm run dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "npm run db:generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
+    "db:push:live": "dotenv -e .env.live -- npx prisma db push",
     "db:start": "colima start && docker start meters",
     "db:stop": "colima stop",
     "docker:run": "docker run --name meters -p 5432:5432 -e POSTGRES_PASSWORD=meterstanden -d postgres"
@@ -31,6 +33,7 @@
     "chart.js": "^3.9.1",
     "chartjs-adapter-luxon": "^1.2.0",
     "chartjs-adapter-moment": "^1.0.0",
+    "dotenv-cli": "^6.0.0",
     "immer": "^9.0.15",
     "luxon": "^3.0.3",
     "next": "12.2.5",
