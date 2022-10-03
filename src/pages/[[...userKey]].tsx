@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import Head from "next/head";
 import Graph from "../components/Graph";
 import { useContext, useMemo } from "react";
 import getDailyAverages from "../utils/getDailyAverages";
@@ -27,11 +26,6 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Meterstanden</title>
-        <meta name="description" content="Analoge meterstanden opvolgen" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Stack
         direction={"column"}
         spacing={{ xs: 2, sm: 5 }}
@@ -40,9 +34,6 @@ const Home: NextPage = () => {
         alignSelf={"center"}
       >
         <RootPaper>
-          <Typography variant="caption" color="GrayText">
-            <>Your unique key is: {key}</>
-          </Typography>
           <MeterEntry />
         </RootPaper>
 
