@@ -1,4 +1,4 @@
-import { Stack, Button } from "@mui/material";
+import { Stack, Button, Typography } from "@mui/material";
 import { useContext } from "react";
 import UserContext from "~/users/UserContext";
 import { trpc } from "~/utils/trpc";
@@ -71,6 +71,10 @@ const DevTools = () => {
       >
         Load demo data
       </Button>
+
+      <Typography variant="caption" color="GrayText">
+        <>Your unique key is: {key}</>
+      </Typography>
 
       <b>Todo prios</b>
       <ol>

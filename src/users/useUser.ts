@@ -11,6 +11,7 @@ const useUser = () => {
 
   const router = useRouter();
 
+  const utils = trpc.useContext();
   const getKey = trpc.user.create.useMutation();
 
   // On mount:
@@ -19,6 +20,10 @@ const useUser = () => {
     if (typeof window === "undefined") {
       // Don't do anything serverside, we'll let client handle it.
       // https://nextjs.org/docs/authentication#authentication-patterns
+      return;
+    }
+
+    if (key) {
       return;
     }
 
@@ -40,7 +45,7 @@ const useUser = () => {
     getKey.mutateAsync().then((key) => {
       setKey(key);
     });
-  }, []);
+  }, [key]);
 
   // When client specifies the key, we validate
   trpc.user.check.useQuery(keyToCheck!, {
@@ -48,6 +53,7 @@ const useUser = () => {
     onSuccess: (userCheckedAndOk) => {
       if (userCheckedAndOk) {
         setKey(keyToCheck);
+        setKeyToCheck(undefined);
         // When a key is validated, store it in localStorage
         window.localStorage?.setItem("key", keyToCheck!);
       }
@@ -61,6 +67,7 @@ const useUser = () => {
     console.log("logging out");
     window.localStorage?.removeItem("key");
     setKey(undefined);
+    utils.meterValue.list.invalidate();
   };
 
   return {
