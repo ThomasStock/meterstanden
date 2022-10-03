@@ -34,6 +34,7 @@
     "chartjs-adapter-luxon": "^1.2.0",
     "chartjs-adapter-moment": "^1.0.0",
     "dotenv-cli": "^6.0.0",
+    "framer-motion": "^7.5.1",
     "immer": "^9.0.15",
     "luxon": "^3.0.3",
     "next": "12.2.5",

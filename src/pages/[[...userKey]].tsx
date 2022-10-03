@@ -26,6 +26,8 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <MeterEntry />
+
       <Stack
         direction={"column"}
         spacing={{ xs: 2, sm: 5 }}
@@ -33,10 +35,6 @@ const Home: NextPage = () => {
         maxWidth="lg"
         alignSelf={"center"}
       >
-        <RootPaper>
-          <MeterEntry />
-        </RootPaper>
-
         <RootPaper>
           <Stack direction={"column"} divider={<Divider />} spacing={2}>
             {dailyAverages && dailyAverages.length ? (
