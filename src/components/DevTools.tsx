@@ -4,12 +4,12 @@ import UserContext from "~/users/UserContext";
 import { trpc } from "~/utils/trpc";
 
 const DevTools = () => {
-  const { key, logOut } = useContext(UserContext);
+  const { user, logOut } = useContext(UserContext);
 
   const utils = trpc.useContext();
   const deleteLastQuery = trpc.meterValue.deleteLastAdded.useMutation({
     onSuccess: () => {
-      utils.meterValue.list.invalidate();
+      utils.user.get.invalidate();
     }
   });
   const deleteAllQuery = trpc.meterValue.deleteAll.useMutation({

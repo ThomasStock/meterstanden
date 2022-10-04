@@ -2,7 +2,7 @@ import React from "react";
 import type { UseUserReturn } from "./useUser";
 
 const UserContext = React.createContext<UseUserReturn>({
-  key: undefined,
+  user: undefined,
   logOut: () => null
 });
 

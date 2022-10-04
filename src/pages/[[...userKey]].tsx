@@ -6,28 +6,25 @@ import MeterEntry from "../components/MeterEntry";
 import periodsForAverage from "../utils/periodsForAverage";
 import { Box, Divider, Paper, PaperProps, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
-import { trpc } from "~/utils/trpc";
 import DevTools from "~/components/DevTools";
 import UserContext from "~/users/UserContext";
 
 const Home: NextPage = () => {
-  const { key } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
-  const meterValueQuery = trpc.meterValue.list.useQuery(key!, {
-    enabled: !!key
-  });
-  const meterValues = meterValueQuery.data;
-
+  const meterValues = user?.meters[0]?.values;
   const dailyAverages = useMemo(() => {
     if (meterValues && meterValues.length) {
       return getDailyAverages(meterValues);
     }
   }, [meterValues]);
 
+  if (!user) {
+    return <div>loading...</div>;
+  }
+
   return (
     <>
-      <MeterEntry />
-
       <Stack
         direction={"column"}
         spacing={{ xs: 2, sm: 5 }}
@@ -35,6 +32,10 @@ const Home: NextPage = () => {
         maxWidth="lg"
         alignSelf={"center"}
       >
+        <RootPaper>
+          <MeterEntry />
+        </RootPaper>
+
         <RootPaper>
           <Stack direction={"column"} divider={<Divider />} spacing={2}>
             {dailyAverages && dailyAverages.length ? (

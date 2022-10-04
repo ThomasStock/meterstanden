@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { UserWithMetersAndValues } from "~/server/routers/user";
 import { trpc } from "~/utils/trpc";
 
 const useUser = () => {
@@ -7,12 +8,21 @@ const useUser = () => {
   const [keyToCheck, setKeyToCheck] = useState<string>();
 
   // A validated, usable key
-  const [key, setKey] = useState<string>();
+  const [user, setUser] = useState<UserWithMetersAndValues>();
 
   const router = useRouter();
 
+  const onGetUser = (user: UserWithMetersAndValues) => {
+    setUser(user);
+    setKeyToCheck(undefined);
+    // When a key is validated, store it in localStorage
+    window.localStorage?.setItem("key", user.key);
+  };
+
   const utils = trpc.useContext();
-  const getKey = trpc.user.create.useMutation();
+  const createUser = trpc.user.create.useMutation({
+    onSuccess: onGetUser
+  });
 
   // On mount:
   // Figure out the key: does client have one or do we ask server for a new one?
@@ -23,7 +33,7 @@ const useUser = () => {
       return;
     }
 
-    if (key) {
+    if (user) {
       return;
     }
 
@@ -41,22 +51,19 @@ const useUser = () => {
       return;
     }
 
-    // 3) Ask server for a new key and set it.
-    getKey.mutateAsync().then((key) => {
-      setKey(key);
-    });
-  }, [key]);
+    // 3) Ask server for a new user and set it.
+    createUser.mutate();
+  }, [user]);
 
-  // When client specifies the key, we validate
-  trpc.user.check.useQuery(keyToCheck!, {
+  // When client specifies the key, we validate by getting it
+  trpc.user.get.useQuery(keyToCheck!, {
     enabled: !!keyToCheck,
-    onSuccess: (userCheckedAndOk) => {
-      if (userCheckedAndOk) {
-        setKey(keyToCheck);
-        setKeyToCheck(undefined);
-        // When a key is validated, store it in localStorage
-        window.localStorage?.setItem("key", keyToCheck!);
-      }
+    onSuccess: onGetUser,
+    onError: (err) => {
+      console.log(err.message);
+
+      // key is invalid, create a new user
+      createUser.mutate();
     }
   });
 
@@ -66,12 +73,12 @@ const useUser = () => {
     }
     console.log("logging out");
     window.localStorage?.removeItem("key");
-    setKey(undefined);
+    setUser(undefined);
     utils.meterValue.list.invalidate();
   };
 
   return {
-    key,
+    user,
     logOut
   };
 };

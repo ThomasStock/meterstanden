@@ -7,8 +7,7 @@ import {
   Collapse,
   useMediaQuery,
   useTheme,
-  Paper,
-  Typography
+  Paper
 } from "@mui/material";
 import { DateTime } from "luxon";
 import React, { useContext, useEffect, useState } from "react";
@@ -16,25 +15,20 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { trpc } from "~/utils/trpc";
 import { Prisma } from "@prisma/client";
 import UserContext from "~/users/UserContext";
-import { motion } from "framer-motion";
-
-const yshow = 0;
-const yhide = -80;
 
 const MeterEntry = () => {
-  const { key } = useContext(UserContext);
-
-  const [y, sety] = useState(yhide);
+  const { user } = useContext(UserContext);
+  const meterId = user?.meters[0]?.id;
 
   const utils = trpc.useContext();
-  const meterValueQuery = trpc.meterValue.list.useQuery(key!, {
-    enabled: !!key
+  const meterValueQuery = trpc.meterValue.list.useQuery(meterId!, {
+    enabled: !!meterId
   });
   const meterValues = meterValueQuery.data;
 
   const addMeterValue = trpc.meterValue.add.useMutation({
     onSuccess: () => {
-      utils.meterValue.list.invalidate();
+      utils.user.get.invalidate();
     }
   });
 
@@ -76,107 +70,89 @@ const MeterEntry = () => {
   );
 
   return (
-    <motion.div
-      style={{
-        // transform: "translateY(-70%)",
-        transform: "translateX(-50%)",
-        left: "50%",
-        position: "fixed",
-        top: 0
-      }}
-      animate={{
-        transform: `translateX(-50%) translateY(${y}%)`
-      }}
-      onClick={() => sety(y === yshow ? yhide : yshow)}
-      whileHover={{
-        transform: `translateX(-50%) translateY(${yshow}%)`
+    <Paper
+      sx={{
+        px: 4,
+        py: 2,
+        borderRadius: 0
       }}
     >
-      <Paper
-        sx={{
-          px: 4,
-          py: 2,
-          my: 2
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (isValid && meterId) {
+            await addMeterValue.mutateAsync({
+              date: inputDate.toJSDate(),
+              value: meterValue.toNumber(),
+              meterId: meterId!
+            });
+            setInput("");
+            setInputDate(DateTime.now());
+          }
         }}
       >
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            if (isValid && key) {
-              await addMeterValue.mutateAsync({
-                date: inputDate.toJSDate(),
-                value: meterValue.toNumber(),
-                userId: key
-              });
-              setInput("");
-              setInputDate(DateTime.now());
-            }
-          }}
-        >
-          <h4>Huidige meterstand ingeven</h4>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
-            <Stack direction={"row"} flexGrow={1} justifyContent="space-around">
-              <TextField
-                autoComplete="off"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="start">kWh</InputAdornment>
-                  )
-                }}
-                value={input}
-                disabled={addMeterValue.isLoading}
-                onChange={(event) => setInput(event.target.value)}
-                placeholder={
-                  biggestMeterValue ? biggestMeterValue.toFixed?.(1) : ""
-                }
-                inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
-                fullWidth
-                error={input.length ? meterValue.isNaN() : false}
-              />
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
+          <Stack direction={"row"} flexGrow={1} justifyContent="space-around">
+            <TextField
+              autoComplete="off"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">kWh</InputAdornment>
+                )
+              }}
+              value={input}
+              disabled={addMeterValue.isLoading}
+              onChange={(event) => setInput(event.target.value)}
+              placeholder={
+                biggestMeterValue ? biggestMeterValue.toFixed?.(1) : ""
+              }
+              inputProps={{ inputMode: "decimal", pattern: "[0-9.]*" }}
+              fullWidth
+              error={input.length ? meterValue.isNaN() : false}
+            />
 
-              <DesktopDatePicker
-                value={inputDate}
-                onChange={(newValue) => {
-                  setInputDate(newValue);
-                }}
-                inputFormat="dd/MM/yyyy"
-                disabled={addMeterValue.isLoading}
-                renderInput={(params) => (
-                  <Box
-                    sx={{ display: "flex", alignItems: "center" }}
-                    ref={params.inputRef}
-                  >
-                    {params.InputProps?.endAdornment}
-                  </Box>
-                )}
-              />
-            </Stack>
-
-            {
-              // We need to completely rerender the collapse
-              //  when changing orientation to deal with some artifacts
-              isMobile ? (
-                <Collapse
-                  in={!meterValue.isNaN()}
-                  orientation={"vertical"}
-                  collapsedSize={0}
+            <DesktopDatePicker
+              value={inputDate}
+              onChange={(newValue) => {
+                setInputDate(newValue);
+              }}
+              inputFormat="dd/MM/yyyy"
+              disabled={addMeterValue.isLoading}
+              renderInput={(params) => (
+                <Box
+                  sx={{ display: "flex", alignItems: "center" }}
+                  ref={params.inputRef}
                 >
-                  {renderButton()}
-                </Collapse>
-              ) : (
-                <Collapse
-                  in={!meterValue.isNaN()}
-                  orientation={"horizontal"}
-                  collapsedSize={0}
-                >
-                  {renderButton()}
-                </Collapse>
-              )
-            }
+                  {params.InputProps?.endAdornment}
+                </Box>
+              )}
+            />
           </Stack>
-        </form>
-      </Paper>
-    </motion.div>
+
+          {
+            // We need to completely rerender the collapse
+            //  when changing orientation to deal with some artifacts
+            isMobile ? (
+              <Collapse
+                in={!meterValue.isNaN()}
+                orientation={"vertical"}
+                collapsedSize={0}
+              >
+                {renderButton()}
+              </Collapse>
+            ) : (
+              <Collapse
+                in={!meterValue.isNaN()}
+                orientation={"horizontal"}
+                collapsedSize={0}
+              >
+                {renderButton()}
+              </Collapse>
+            )
+          }
+        </Stack>
+      </form>
+    </Paper>
   );
 };
 
