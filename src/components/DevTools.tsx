@@ -5,26 +5,22 @@ import { trpc } from "~/utils/trpc";
 
 const DevTools = () => {
   const { user, logOut } = useContext(UserContext);
+  const { key } = user ?? {};
 
   const utils = trpc.useContext();
-  const deleteLastQuery = trpc.meterValue.deleteLastAdded.useMutation({
-    onSuccess: () => {
-      utils.user.get.invalidate();
-    }
-  });
+
   const deleteAllQuery = trpc.meterValue.deleteAll.useMutation({
     onSuccess: () => {
       utils.meterValue.list.invalidate();
     }
   });
-  const loadDemoData = trpc.meterValue.loadDemoData.useMutation({
+  const loadDemoData = trpc.user.loadDemoData.useMutation({
     onSuccess: () => {
       utils.meterValue.list.invalidate();
     }
   });
 
-  const isQueryRunning =
-    !deleteLastQuery.isIdle || !deleteAllQuery.isIdle || !loadDemoData.isIdle;
+  const isQueryRunning = !deleteAllQuery.isIdle || !loadDemoData.isIdle;
 
   return (
     <Stack spacing={0}>
@@ -34,20 +30,9 @@ const DevTools = () => {
         onClick={() => {
           logOut();
         }}
-        disabled={!key}
+        disabled={!user}
       >
         Clear local user key
-      </Button>
-      <Button
-        onClick={async () => {
-          if (key) {
-            await deleteLastQuery.mutateAsync(key);
-            deleteLastQuery.reset();
-          }
-        }}
-        disabled={isQueryRunning}
-      >
-        Delete last entry
       </Button>
       <Button
         onClick={async () => {
@@ -56,7 +41,7 @@ const DevTools = () => {
             deleteAllQuery.reset();
           }
         }}
-        disabled={isQueryRunning}
+        disabled={!user || isQueryRunning}
       >
         Clear all data
       </Button>
@@ -67,7 +52,7 @@ const DevTools = () => {
             loadDemoData.reset();
           }
         }}
-        disabled={isQueryRunning}
+        disabled={!user || isQueryRunning}
       >
         Load demo data
       </Button>
