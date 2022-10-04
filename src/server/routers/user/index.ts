@@ -28,11 +28,11 @@ export type UserWithMetersAndValues = Prisma.UserGetPayload<
 >;
 
 const getUserWithMetersAndValues = async (key: string) => {
-  const users = await prisma.user.findUniqueOrThrow({
+  const user = await prisma.user.findUnique({
     where: { key },
     ...userWithMetersAndValues
   });
-  return users;
+  return user;
 };
 
 export const userRouter = t.router({
