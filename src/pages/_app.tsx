@@ -44,6 +44,7 @@ const MyApp = (props: MyAppProps) => {
   const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
 
   const userService = useUser();
+  console.log("userSERVICE", userService.user);
 
   return (
     <CacheProvider value={emotionCache}>

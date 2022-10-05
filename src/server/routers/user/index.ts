@@ -45,6 +45,7 @@ export const userRouter = t.router({
       }
       // create user
       const key = makeId(5);
+      console.log("<ADE", key);
       const user = await prisma.user.create({
         data: { key },
         ...userWithMetersAndValues

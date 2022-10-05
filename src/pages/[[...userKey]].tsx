@@ -20,8 +20,10 @@ const Home: NextPage = () => {
   // }, [meterValues]);
 
   if (!user) {
+    console.log("NOT USER");
     return <div>loading...</div>;
   }
+  console.log("USER", user.key);
 
   return (
     <>
