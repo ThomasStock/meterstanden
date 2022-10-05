@@ -12,12 +12,12 @@ import UserContext from "~/users/UserContext";
 const Home: NextPage = () => {
   const { user } = useContext(UserContext);
 
-  const meterValues = user?.meters[0]?.values;
-  const dailyAverages = useMemo(() => {
-    if (meterValues && meterValues.length) {
-      return getDailyAverages(meterValues);
-    }
-  }, [meterValues]);
+  // const meterValues = user?.meters[0]?.values;
+  // const dailyAverages = useMemo(() => {
+  //   if (meterValues && meterValues.length) {
+  //     return getDailyAverages(meterValues);
+  //   }
+  // }, [meterValues]);
 
   if (!user) {
     return <div>loading...</div>;
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
           <MeterEntry />
         </RootPaper>
 
-        <RootPaper>
+        {/* <RootPaper>
           <Stack direction={"column"} divider={<Divider />} spacing={2}>
             {dailyAverages && dailyAverages.length ? (
               <Graph
@@ -62,7 +62,7 @@ const Home: NextPage = () => {
               />
             ) : null}
           </Stack>
-        </RootPaper>
+        </RootPaper> */}
         <RootPaper>
           <DevTools />
         </RootPaper>

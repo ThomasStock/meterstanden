@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import { DateTime, DateTimeUnit } from "luxon";
-import { MeterValue } from "~/server/routers/meterValue";
 
 export const renderDate = (date: DateTime) => {
   const hasTime = date.hour !== 0 || date.minute !== 0 || date.second !== 0;

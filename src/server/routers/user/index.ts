@@ -28,7 +28,7 @@ export type UserWithMetersAndValues = Prisma.UserGetPayload<
 >;
 
 const getUserWithMetersAndValues = async (key: string) => {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findUniqueOrThrow({
     where: { key },
     ...userWithMetersAndValues
   });
@@ -36,18 +36,21 @@ const getUserWithMetersAndValues = async (key: string) => {
 };
 
 export const userRouter = t.router({
-  create: t.procedure.mutation(async () => {
-    const key = makeId(5);
-    const user = await prisma.user.create({
-      data: { key },
-      ...userWithMetersAndValues
-    });
-    return user;
-  }),
-  get: t.procedure.input(z.string()).query(async ({ input: key }) => {
-    const user = await getUserWithMetersAndValues(key);
-    return user;
-  }),
+  get: t.procedure
+    .input(userKey.optional())
+    .query(async ({ input: clientsideKey }) => {
+      if (clientsideKey) {
+        const user = await getUserWithMetersAndValues(clientsideKey);
+        return user;
+      }
+      // create user
+      const key = makeId(5);
+      const user = await prisma.user.create({
+        data: { key },
+        ...userWithMetersAndValues
+      });
+      return user;
+    }),
   loadDemoData: t.procedure.input(userKey).mutation(async ({ input: key }) => {
     // Delete existing meters
     await prisma.user.update({

@@ -1,7 +1,6 @@
-import { Prisma } from "@prisma/client";
+import { MeterValue, Prisma } from "@prisma/client";
 import { ChartOptions } from "chart.js";
 import { DateTime } from "luxon";
-import { MeterValue } from "~/server/routers/meterValue";
 import { PeriodOptions } from "../../utils/useAppStore";
 import {
   renderDate,
