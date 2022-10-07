@@ -8,9 +8,11 @@ import { Box, Divider, Paper, PaperProps, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import DevTools from "~/components/DevTools";
 import UserContext from "~/users/UserContext";
+import useUser from "~/users/useUser";
 
 const Home: NextPage = () => {
-  const { user } = useContext(UserContext);
+  const userService = useUser();
+  const { user } = userService;
 
   // const meterValues = user?.meters[0]?.values;
   // const dailyAverages = useMemo(() => {
@@ -23,10 +25,10 @@ const Home: NextPage = () => {
     console.log("NOT USER");
     return <div>loading...</div>;
   }
-  console.log("USER", user.key);
+  console.log("USER", user, user.key);
 
   return (
-    <>
+    <UserContext.Provider value={userService}>
       <Stack
         direction={"column"}
         spacing={{ xs: 2, sm: 5 }}
@@ -69,7 +71,7 @@ const Home: NextPage = () => {
           <DevTools />
         </RootPaper>
       </Stack>
-    </>
+    </UserContext.Provider>
   );
 };
 
