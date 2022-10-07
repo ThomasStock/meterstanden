@@ -13,6 +13,8 @@ import { DateTime } from "luxon";
 import { Prisma } from "@prisma/client";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { persistQueryClient } from "@tanstack/react-query-persist-client";
 
 superjson.registerCustom<DateTime, string>(
   {
@@ -42,8 +44,29 @@ interface MyAppProps extends AppProps {
 const MyApp = (props: MyAppProps) => {
   const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
 
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            cacheTime: Infinity
+          }
+        }
+      })
+  );
   const [trpcClient] = useState(() => createTrpcClient());
+
+  if (typeof window !== "undefined") {
+    const localStoragePersister = createSyncStoragePersister({
+      storage: window.localStorage
+    });
+
+    persistQueryClient({
+      queryClient,
+      persister: localStoragePersister,
+      maxAge: Infinity
+    });
+  }
 
   return (
     <CacheProvider value={emotionCache}>

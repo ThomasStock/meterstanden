@@ -35,10 +35,15 @@ const getUserWithMetersAndValues = async (key: string) => {
   return user;
 };
 
+function timeout(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export const userRouter = t.router({
   get: t.procedure
     .input(userKey.optional())
     .query(async ({ input: clientsideKey }) => {
+      await timeout(5000);
       if (clientsideKey) {
         const user = await getUserWithMetersAndValues(clientsideKey);
         return user;
