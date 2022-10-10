@@ -1,6 +1,6 @@
-import { MeterValues } from "~/server/routers/meterValue";
+import { MeterValue } from "~/server/routers/user";
 
-const getDailyAverages = (meterValues: MeterValues) => {
+const getDailyAverages = (meterValues: MeterValue[]) => {
   if (meterValues.length < 2) {
     // Need at least 2 values to get an average
     return;

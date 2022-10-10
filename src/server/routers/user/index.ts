@@ -23,9 +23,11 @@ const userWithMetersAndValues = Prisma.validator<Prisma.UserArgs>()({
     }
   }
 });
-export type UserWithMetersAndValues = Prisma.UserGetPayload<
-  typeof userWithMetersAndValues
+export type UserWithMetersAndValues = Awaited<
+  ReturnType<typeof getUserWithMetersAndValues>
 >;
+export type Meter = UserWithMetersAndValues["meters"][number];
+export type MeterValue = Meter["values"][number];
 
 const getUserWithMetersAndValues = async (key: string) => {
   const user = await prisma.user.findUniqueOrThrow({

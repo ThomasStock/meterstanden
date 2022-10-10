@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Graph from "../components/Graph";
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 import getDailyAverages from "../utils/getDailyAverages";
 import MeterEntry from "../components/MeterEntry";
 import periodsForAverage from "../utils/periodsForAverage";
@@ -14,12 +14,12 @@ const Home: NextPage = () => {
   const userService = useUser();
   const { user } = userService;
 
-  // const meterValues = user?.meters[0]?.values;
-  // const dailyAverages = useMemo(() => {
-  //   if (meterValues && meterValues.length) {
-  //     return getDailyAverages(meterValues);
-  //   }
-  // }, [meterValues]);
+  const meterValues = user?.meters[0]?.values;
+  const dailyAverages = useMemo(() => {
+    if (meterValues && meterValues.length) {
+      return getDailyAverages(meterValues);
+    }
+  }, [meterValues]);
 
   if (!user) {
     console.log("NOT USER");
@@ -40,7 +40,7 @@ const Home: NextPage = () => {
           <MeterEntry />
         </RootPaper>
 
-        {/* <RootPaper>
+        <RootPaper>
           <Stack direction={"column"} divider={<Divider />} spacing={2}>
             {dailyAverages && dailyAverages.length ? (
               <Graph
@@ -66,7 +66,7 @@ const Home: NextPage = () => {
               />
             ) : null}
           </Stack>
-        </RootPaper> */}
+        </RootPaper>
         <RootPaper>
           <DevTools />
         </RootPaper>

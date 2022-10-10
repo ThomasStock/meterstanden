@@ -13,7 +13,7 @@ const blue = "rgb(0, 168, 255)";
 
 export interface Options {
   isAverage?: boolean;
-  data: Omit<MeterValue, "id">[];
+  data: Pick<MeterValue, "date" | "value">[];
   energyUnit: string;
   title: string;
 }
