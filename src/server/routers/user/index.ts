@@ -7,33 +7,16 @@ import { Prisma } from "@prisma/client";
 
 export const userKey = z.string();
 
-const userWithMetersAndValues = Prisma.validator<Prisma.UserArgs>()({
-  include: {
-    meters: {
-      orderBy: {
-        createdAt: "asc"
-      },
-      include: {
-        values: {
-          orderBy: {
-            date: "asc"
-          }
-        }
-      }
-    }
-  }
-});
-export type UserWithMetersAndValues = Awaited<
-  ReturnType<typeof getUserWithMetersAndValues>
->;
 export type Meter = UserWithMetersAndValues["meters"][number];
 export type MeterValue = Meter["values"][number];
 
 const getUserWithMetersAndValues = async (key: string) => {
-  const user = await prisma.user.findUniqueOrThrow({
-    where: { key },
-    ...userWithMetersAndValues
-  });
+  const user = await prisma.user
+    .findUniqueOrThrow({
+      where: { key },
+      ...userWithMetersAndValues
+    })
+    .then(mapOne);
   return user;
 };
 
