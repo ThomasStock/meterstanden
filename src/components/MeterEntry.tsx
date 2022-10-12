@@ -15,6 +15,7 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { trpc } from "~/utils/trpc";
 import { Prisma } from "@prisma/client";
 import UserContext from "~/users/UserContext";
+const Decimal = Prisma.Decimal;
 
 const MeterEntry = () => {
   const { user } = useContext(UserContext);
@@ -41,9 +42,9 @@ const MeterEntry = () => {
   }, []);
 
   const [input, setInput] = useState("");
-  let meterValue = new Prisma.Decimal(NaN);
+  let meterValue = new Decimal(NaN);
   try {
-    meterValue = new Prisma.Decimal(input);
+    meterValue = new Decimal(input);
   } catch {}
 
   const [inputDate, setInputDate] = useState<DateTime | null>(null);
@@ -51,7 +52,7 @@ const MeterEntry = () => {
   const isValid = meterValue && !meterValue.isNaN() && inputDate?.isValid;
 
   // This is used as placeholder for the input
-  const biggestMeterValue = Prisma.Decimal.max(
+  const biggestMeterValue = Decimal.max(
     ...(meterValues?.map((v) => v.value) ?? []),
     meterValue.isNaN() ? 0 : meterValue
   );

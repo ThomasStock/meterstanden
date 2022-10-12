@@ -1,16 +1,26 @@
 import { t } from "~/server/trpc";
 import { prisma } from "~/server/db/client";
-import { userKey } from "../user";
-import { z } from "zod";
-import defaultMeterSelect from "./_utils/defaultMeterSelect";
+import { userKey } from "../user/userKey";
+import { Prisma } from "@prisma/client";
+import { meterValueArgs } from "../meterValue";
 
-export const meterId = z.string();
+export const meterArgs = Prisma.validator<Prisma.MeterArgs>()({
+  include: {
+    values: {
+      orderBy: {
+        date: "asc"
+      },
+      ...meterValueArgs
+    }
+  }
+});
+export type MeterWithValues = Prisma.MeterGetPayload<typeof meterArgs>;
 
 export const meterRouter = t.router({
   list: t.procedure.input(userKey).query(async ({ input: key }) => {
     const meters = await prisma.user
       .findFirstOrThrow({ where: { key } })
-      .meters({ select: defaultMeterSelect });
+      .meters({ ...meterArgs });
     return meters;
   })
 });

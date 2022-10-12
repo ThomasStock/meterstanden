@@ -1,4 +1,5 @@
-import { MeterValue } from "~/server/routers/user";
+import { DateTime } from "luxon";
+import { MeterValue } from "~/server/routers/meterValue";
 
 const getDailyAverages = (meterValues: MeterValue[]) => {
   if (meterValues.length < 2) {
@@ -7,12 +8,16 @@ const getDailyAverages = (meterValues: MeterValue[]) => {
   }
 
   let averages = meterValues.slice(1).map((entry, index) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const date = DateTime.fromJSDate(entry.date);
+    const value = entry.value;
+
     const previous = meterValues[index]!;
+    const previousDate = DateTime.fromJSDate(previous.date);
+    const previousValue = previous.value;
 
-    const daysSincePrevious = entry.date.diff(previous.date).as("days");
+    const daysSincePrevious = date.diff(previousDate).as("days");
 
-    const usageSincePrevious = entry.value.minus(previous.value);
+    const usageSincePrevious = value.minus(previousValue);
 
     const averageUsagePerDaySincePrevious =
       usageSincePrevious.div(daysSincePrevious);
@@ -23,13 +28,10 @@ const getDailyAverages = (meterValues: MeterValue[]) => {
     };
   });
 
-  // Make sure graph shows a line instead of a dot
+  // Make sure graph shows a horizontal line at start instead of a dot.
+  //  by adding a 'fake' average at the first date of measurement.
 
-  averages = [
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    { ...averages[0]!, date: meterValues[0]!.date },
-    ...averages
-  ];
+  averages = [{ ...averages[0]!, date: meterValues[0]!.date }, ...averages];
 
   return averages;
 };

@@ -4,19 +4,27 @@ import { z } from "zod";
 import demoValues from "./_utils/demoValues";
 import makeId from "./_utils/makeId";
 import { Prisma } from "@prisma/client";
+import { meterArgs } from "../meter";
 
 export const userKey = z.string();
 
-export type Meter = UserWithMetersAndValues["meters"][number];
-export type MeterValue = Meter["values"][number];
+export const userArgs = Prisma.validator<Prisma.UserArgs>()({
+  include: {
+    meters: {
+      orderBy: {
+        createdAt: "asc"
+      },
+      ...meterArgs
+    }
+  }
+});
+export type UserWithMeters = Prisma.UserGetPayload<typeof userArgs>;
 
 const getUserWithMetersAndValues = async (key: string) => {
-  const user = await prisma.user
-    .findUniqueOrThrow({
-      where: { key },
-      ...userWithMetersAndValues
-    })
-    .then(mapOne);
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { key },
+    ...userArgs
+  });
   return user;
 };
 
@@ -38,7 +46,7 @@ export const userRouter = t.router({
       console.log("<ADE", key);
       const user = await prisma.user.create({
         data: { key },
-        ...userWithMetersAndValues
+        ...userArgs
       });
       return user;
     }),

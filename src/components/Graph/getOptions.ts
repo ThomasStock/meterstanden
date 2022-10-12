@@ -1,6 +1,7 @@
-import { MeterValue, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { ChartOptions } from "chart.js";
 import { DateTime } from "luxon";
+import { MeterValue } from "~/server/routers/meterValue";
 import { PeriodOptions } from "../../utils/useAppStore";
 import {
   renderDate,
@@ -8,6 +9,7 @@ import {
   renderAverageUseTooltipLabel,
   renderRelativeDate
 } from "./renderUtils";
+const Decimal = Prisma.Decimal;
 
 const blue = "rgb(0, 168, 255)";
 
@@ -29,7 +31,7 @@ const getOptions = ({
 }: Options & Omit<PeriodOptions, "label">): ChartOptions<"line"> => {
   const values = data.map((data) => data.value);
 
-  const suggestedMax = Prisma.Decimal.max(...values).mul(1.2);
+  const suggestedMax = Decimal.max(...values).mul(1.2);
 
   return {
     elements: {
