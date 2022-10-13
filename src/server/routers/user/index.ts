@@ -34,22 +34,21 @@ function timeout(ms: number) {
 
 export const userRouter = t.router({
   get: t.procedure
-    .input(userKey.optional())
-    .query(async ({ input: clientsideKey }) => {
-      await timeout(5000);
-      if (clientsideKey) {
-        const user = await getUserWithMetersAndValues(clientsideKey);
-        return user;
-      }
-      // create user
-      const key = makeId(5);
-      console.log("<ADE", key);
-      const user = await prisma.user.create({
-        data: { key },
-        ...userArgs
-      });
+    .input(z.object({ id: userKey }))
+    .query(async ({ input: { id: clientsideKey } }) => {
+      await timeout(2000);
+      const user = await getUserWithMetersAndValues(clientsideKey);
       return user;
     }),
+  create: t.procedure.mutation(async () => {
+    await timeout(2000);
+    const key = makeId(5);
+    const user = await prisma.user.create({
+      data: { key },
+      ...userArgs
+    });
+    return user;
+  }),
   loadDemoData: t.procedure.input(userKey).mutation(async ({ input: key }) => {
     // Delete existing meters
     await prisma.user.update({

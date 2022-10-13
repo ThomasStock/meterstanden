@@ -49,7 +49,8 @@ const MyApp = (props: MyAppProps) => {
       new QueryClient({
         defaultOptions: {
           queries: {
-            cacheTime: Infinity
+            cacheTime: Infinity,
+            staleTime: 10 * 1000
           }
         }
       })

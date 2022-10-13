@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { trpc } from "~/utils/trpc";
 import useLocalKey from "./useLocalKey";
 
@@ -5,14 +6,26 @@ const useUser = () => {
   // A key we found locally but that should be validated on server
   const { localKey, updateLocalKey } = useLocalKey();
 
-  // When client specifies the key, we validate by getting the user
-  const { data: user } = trpc.user.get.useQuery(localKey, {
+  const utils = trpc.useContext();
+
+  const { data: user, remove } = trpc.user.get.useQuery(
+    { id: localKey! },
+    { enabled: !!localKey }
+  );
+
+  const createUser = trpc.user.create.useMutation({
     onSuccess: (user) => {
-      if (user.key !== localKey) {
-        updateLocalKey(user.key);
-      }
+      console.log("setting data", user);
+      utils.user.get.setData(user, { id: user.key });
+      updateLocalKey(user.key);
     }
   });
+
+  useEffect(() => {
+    if (!localKey) {
+      createUser.mutateAsync();
+    }
+  }, [localKey]);
 
   const logOut = () => {
     if (typeof window === "undefined") {
@@ -20,6 +33,7 @@ const useUser = () => {
     }
     console.log("logging out");
     updateLocalKey(null);
+    remove();
   };
 
   return {
