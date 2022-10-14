@@ -3,7 +3,6 @@ import { trpc } from "~/utils/trpc";
 import useLocalKey from "./useLocalKey";
 
 const useUser = () => {
-  // A key we found locally but that should be validated on server
   const { localKey, updateLocalKey } = useLocalKey();
 
   const utils = trpc.useContext();
@@ -23,7 +22,7 @@ const useUser = () => {
 
   useEffect(() => {
     if (!localKey) {
-      createUser.mutateAsync();
+      createUser.mutate();
     }
   }, [localKey]);
 

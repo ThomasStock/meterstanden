@@ -1,6 +1,9 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-
+/**
+ * Reads a 'user key' from local storage or the url and returns it.
+ * Stores/updates a 'user key' in local storage.
+ */
 const useLocalKey = () => {
   const router = useRouter();
 
@@ -33,7 +36,10 @@ const useLocalKey = () => {
     setLocalKey(newKey);
   };
 
-  return { localKey, updateLocalKey };
+  return {
+    localKey,
+    updateLocalKey
+  };
 };
 
 export default useLocalKey;
