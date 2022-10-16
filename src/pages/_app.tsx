@@ -60,8 +60,8 @@ const MyApp = (props: MyAppProps) => {
   if (typeof window !== "undefined") {
     const localStoragePersister = createSyncStoragePersister({
       storage: window.localStorage,
-      serialize: superjson.serialize,
-      deserialize: superjson.deserialize
+      serialize: superjson.stringify,
+      deserialize: superjson.parse
     });
 
     persistQueryClient({
