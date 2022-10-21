@@ -9,14 +9,14 @@ const DevTools = () => {
 
   const utils = trpc.useContext();
 
-  const deleteAllQuery = trpc.meterValue.deleteAll.useMutation({
-    onSuccess: () => {
-      utils.meterValue.list.invalidate();
+  const deleteAllQuery = trpc.user.deleteAll.useMutation({
+    onSuccess: (newUser) => {
+      utils.user.get.setData(newUser, { id: newUser.key });
     }
   });
   const loadDemoData = trpc.user.loadDemoData.useMutation({
-    onSuccess: () => {
-      utils.meterValue.list.invalidate();
+    onSuccess: (newUser) => {
+      utils.user.get.setData(newUser, { id: newUser.key });
     }
   });
 

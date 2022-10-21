@@ -57,24 +57,35 @@ export const userRouter = t.router({
     });
 
     // Load in demo meters and metervalues
-    demoValues.forEach(async (values, meterLabel) => {
-      await prisma.user.update({
-        where: { key },
-        data: {
-          meters: {
-            create: {
-              label: meterLabel,
-              values: {
-                createMany: { data: values }
+    await Promise.all(
+      Array.from(demoValues).map(async ([meterLabel, values]) => {
+        await prisma.user.update({
+          where: { key },
+          data: {
+            meters: {
+              create: {
+                label: meterLabel,
+                values: {
+                  createMany: { data: values }
+                }
               }
             }
           }
-        }
-      });
-    });
+        });
+      })
+    );
 
     // Re-fetch and return everything
     const user = await getUserWithMetersAndValues(key);
+    return user;
+  }),
+  deleteAll: t.procedure.input(userKey).mutation(async ({ input: userKey }) => {
+    await prisma.meterValue.deleteMany({
+      where: { meter: { userId: userKey } }
+    });
+
+    // Re-fetch and return everything
+    const user = await getUserWithMetersAndValues(userKey);
     return user;
   })
 });

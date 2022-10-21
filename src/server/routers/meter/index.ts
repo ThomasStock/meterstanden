@@ -17,10 +17,10 @@ export const meterArgs = Prisma.validator<Prisma.MeterArgs>()({
 export type MeterWithValues = Prisma.MeterGetPayload<typeof meterArgs>;
 
 export const meterRouter = t.router({
-  list: t.procedure.input(userKey).query(async ({ input: key }) => {
-    const meters = await prisma.user
-      .findFirstOrThrow({ where: { key } })
-      .meters({ ...meterArgs });
-    return meters;
-  })
+  // list: t.procedure.input(userKey).query(async ({ input: key }) => {
+  //   const meters = await prisma.user
+  //     .findFirstOrThrow({ where: { key } })
+  //     .meters({ ...meterArgs });
+  //   return meters;
+  // })
 });

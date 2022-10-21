@@ -8,16 +8,16 @@ export const meterValueArgs = Prisma.validator<Prisma.MeterValueArgs>()({});
 export type MeterValue = Prisma.MeterValueGetPayload<typeof meterValueArgs>;
 
 export const meterValueRouter = t.router({
-  list: t.procedure.input(meterId).query(async ({ input: meterId }) => {
-    const items = await prisma.meterValue.findMany({
-      where: { meterId },
-      orderBy: {
-        date: "asc"
-      },
-      ...meterValueArgs
-    });
-    return items;
-  }),
+  // list: t.procedure.input(meterId).query(async ({ input: meterId }) => {
+  //   const items = await prisma.meterValue.findMany({
+  //     where: { meterId },
+  //     orderBy: {
+  //       date: "asc"
+  //     },
+  //     ...meterValueArgs
+  //   });
+  //   return items;
+  // }),
   add: t.procedure
     .input(
       z.object({
@@ -50,11 +50,5 @@ export const meterValueRouter = t.router({
         where: { id: lastMeterValue.id },
         ...meterValueArgs
       });
-    }),
-  deleteAll: t.procedure.input(meterId).mutation(async ({ input: meterId }) => {
-    await prisma.meterValue.deleteMany({
-      where: { meterId },
-      ...meterValueArgs
-    });
-  })
+    })
 });

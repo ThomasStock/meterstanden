@@ -22,10 +22,7 @@ const MeterEntry = () => {
   const meterId = user?.meters[0]?.id;
 
   const utils = trpc.useContext();
-  const meterValueQuery = trpc.meterValue.list.useQuery(meterId!, {
-    enabled: !!meterId
-  });
-  const meterValues = meterValueQuery.data;
+  const meterValues = user?.meters?.[0]?.values;
 
   const addMeterValue = trpc.meterValue.add.useMutation({
     onSuccess: () => {
