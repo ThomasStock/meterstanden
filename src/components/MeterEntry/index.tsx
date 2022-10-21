@@ -15,6 +15,7 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { trpc } from "~/utils/trpc";
 import { Prisma } from "@prisma/client";
 import UserContext from "~/users/UserContext";
+import TabBar from "./TabBar";
 const Decimal = Prisma.Decimal;
 
 const MeterEntry = () => {
@@ -68,27 +69,22 @@ const MeterEntry = () => {
   );
 
   return (
-    <Paper
-      sx={{
-        px: 4,
-        py: 2,
-        borderRadius: 0
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (isValid && meterId) {
+          await addMeterValue.mutateAsync({
+            date: inputDate.toJSDate(),
+            value: meterValue.toNumber(),
+            meterId: meterId!
+          });
+          setInput("");
+          setInputDate(DateTime.now());
+        }
       }}
     >
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          if (isValid && meterId) {
-            await addMeterValue.mutateAsync({
-              date: inputDate.toJSDate(),
-              value: meterValue.toNumber(),
-              meterId: meterId!
-            });
-            setInput("");
-            setInputDate(DateTime.now());
-          }
-        }}
-      >
+      <Stack>
+        <TabBar />
         <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
           <Stack direction={"row"} flexGrow={1} justifyContent="space-around">
             <TextField
@@ -149,8 +145,8 @@ const MeterEntry = () => {
             )
           }
         </Stack>
-      </form>
-    </Paper>
+      </Stack>
+    </form>
   );
 };
 
