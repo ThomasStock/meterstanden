@@ -9,6 +9,7 @@ import { Stack } from "@mui/system";
 import DevTools from "~/components/DevTools";
 import UserContext from "~/users/UserContext";
 import useUser from "~/users/useUser";
+import Menu from "../components/Menu";
 
 const Home: NextPage = () => {
   const userService = useUser();
@@ -29,6 +30,7 @@ const Home: NextPage = () => {
 
   return (
     <UserContext.Provider value={userService}>
+      <Menu />
       <Stack
         direction={"column"}
         spacing={{ xs: 2, sm: 5 }}
@@ -36,10 +38,6 @@ const Home: NextPage = () => {
         maxWidth="lg"
         alignSelf={"center"}
       >
-        <RootPaper>
-          <MeterEntry />
-        </RootPaper>
-
         <RootPaper>
           <Stack direction={"column"} divider={<Divider />} spacing={2}>
             {dailyAverages && dailyAverages.length ? (
