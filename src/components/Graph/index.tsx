@@ -15,6 +15,7 @@ import { Stack } from "@mui/material";
 import useAppStore, { PeriodOptions } from "../../utils/useAppStore";
 import PeriodPicker from "./PeriodPicker";
 import getOptions, { Options } from "./getOptions";
+import MeterUI from "../Menu/MeterUI";
 
 Chart.register(
   TimeScale,
@@ -30,12 +31,13 @@ Chart.register(
 interface GraphProps extends Options {
   graphKey: string;
   periods?: PeriodOptions[];
+  meterUI: MeterUI;
 }
 
 const red = "rgb(255, 99, 132)";
 
 const Graph = (props: GraphProps) => {
-  const { graphKey, data, periods } = props;
+  const { graphKey, data, periods, meterUI } = props;
 
   // For the button bar where you can select "last day, last week, etc"
   const { selectedPeriods, selectPeriod } = useAppStore();
@@ -54,7 +56,7 @@ const Graph = (props: GraphProps) => {
         data={{
           datasets: [
             {
-              borderColor: red,
+              borderColor: meterUI.bgColor,
               data: data.map((entry) => ({ x: entry.date, y: entry.value }))
             }
           ]

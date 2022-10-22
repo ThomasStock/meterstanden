@@ -10,6 +10,8 @@ import DevTools from "~/components/DevTools";
 import UserContext from "~/users/UserContext";
 import useUser from "~/users/useUser";
 import Menu from "../components/Menu";
+import { menuSpacerProps } from "~/components/Menu/menuSpacerProps";
+import meterUIs from "~/components/Menu/MeterUI";
 
 const Home: NextPage = () => {
   const userService = useUser();
@@ -30,44 +32,48 @@ const Home: NextPage = () => {
 
   return (
     <UserContext.Provider value={userService}>
-      <Menu />
-      <Stack
-        direction={"column"}
-        spacing={{ xs: 2, sm: 5 }}
-        sx={{ m: "auto", my: { xs: 2, sm: 5 } }}
-        maxWidth="lg"
-        alignSelf={"center"}
-      >
-        <RootPaper>
-          <Stack direction={"column"} divider={<Divider />} spacing={2}>
-            {dailyAverages && dailyAverages.length ? (
-              <Graph
-                graphKey="averageUsePerDayElectricity"
-                title="Gemiddeld verbruik/dag"
-                energyUnit="kWh"
-                data={dailyAverages}
-                isAverage
-                periods={periodsForAverage}
-              />
-            ) : (
-              <Typography>
-                Voeg minstens 2 meterstanden toe om je gemiddeld verbruik per
-                dag te zien
-              </Typography>
-            )}
-            {meterValues && meterValues.length ? (
-              <Graph
-                graphKey="totalUseElectricty"
-                title="Meterstand evolutie"
-                energyUnit="kWh"
-                data={meterValues}
-              />
-            ) : null}
-          </Stack>
-        </RootPaper>
-        <RootPaper>
-          <DevTools />
-        </RootPaper>
+      <Stack>
+        <Stack
+          direction={"column"}
+          spacing={{ xs: 2, sm: 5 }}
+          sx={{ m: "auto", my: { xs: 2, sm: 5 } }}
+          maxWidth="lg"
+          alignSelf={"center"}
+        >
+          <RootPaper>
+            <Stack direction={"column"} divider={<Divider />} spacing={2}>
+              {dailyAverages && dailyAverages.length ? (
+                <Graph
+                  graphKey="averageUsePerDayElectricity"
+                  title="Gemiddeld verbruik/dag"
+                  energyUnit="kWh"
+                  data={dailyAverages}
+                  isAverage
+                  periods={periodsForAverage}
+                  meterUI={meterUIs[0]}
+                />
+              ) : (
+                <Typography>
+                  Voeg minstens 2 meterstanden toe om je gemiddeld verbruik per
+                  dag te zien
+                </Typography>
+              )}
+              {meterValues && meterValues.length ? (
+                <Graph
+                  graphKey="totalUseElectricty"
+                  title="Meterstand evolutie"
+                  energyUnit="kWh"
+                  data={meterValues}
+                  meterUI={meterUIs[0]}
+                />
+              ) : null}
+            </Stack>
+          </RootPaper>
+          <RootPaper>
+            <DevTools />
+          </RootPaper>
+        </Stack>
+        <Menu />
       </Stack>
     </UserContext.Provider>
   );
