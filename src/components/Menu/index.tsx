@@ -1,8 +1,19 @@
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  SxProps,
+  Theme,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from "@mui/material";
 import { Stack } from "@mui/system";
 import React from "react";
-import { menuSpacerProps } from "./menuSpacerProps";
 import meterUIs, { MeterUI } from "./MeterUI";
+
+const menuSpacerProps: SxProps<Theme> = {
+  height: 100,
+  maxHeight: "10vh"
+};
 
 const Menu = () => {
   return (
@@ -64,17 +75,27 @@ const MenuItem = (props: MenuItemProps) => {
         sx={{
           height: "100%",
           alignItems: "center",
-          justifyContent: "space-between"
+          justifyContent: "center"
         }}
       >
-        {renderLabelBox(<>&nbsp;</>)}
         <Icon
           sx={{
             height: { xs: "60%", sm: "40%" },
             width: { xs: "60%", sm: "40%" }
           }}
         />
-        {renderLabelBox(isMobile ? <>&nbsp;</> : label)}
+        {!isMobile ? (
+          <Typography
+            variant={"caption"}
+            sx={{
+              verticalAlign: "top",
+              textShadow:
+                "0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08)"
+            }}
+          >
+            {label}
+          </Typography>
+        ) : null}
       </Stack>
     </Stack>
   );
