@@ -7,7 +7,8 @@ import {
   useTheme
 } from "@mui/material";
 import { Stack } from "@mui/system";
-import React from "react";
+import { motion } from "framer-motion";
+import React, { useState } from "react";
 import meterUIs, { MeterUI } from "./MeterUI";
 
 const menuSpacerProps: SxProps<Theme> = {
@@ -16,18 +17,21 @@ const menuSpacerProps: SxProps<Theme> = {
 };
 
 const Menu = () => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   return (
     <>
       <Box sx={menuSpacerProps}></Box>
       <Box
-        sx={{
+        sx={(theme) => ({
           position: "fixed",
           bottom: 0,
           right: 0,
           left: 0,
           ...menuSpacerProps,
-          zIndex: "100"
-        }}
+          zIndex: "100",
+          backgroundColor: theme.palette.secondary.main
+        })}
       >
         <Stack
           direction={"row"}
@@ -36,7 +40,12 @@ const Menu = () => {
           }}
         >
           {meterUIs.map((meterUI, i) => (
-            <MenuItem key={i} meterUI={meterUI} />
+            <MenuItem
+              key={i}
+              onSelect={() => setSelectedIndex(i)}
+              selected={selectedIndex === i}
+              meterUI={meterUI}
+            />
           ))}
         </Stack>
       </Box>
@@ -46,24 +55,19 @@ const Menu = () => {
 
 interface MenuItemProps {
   meterUI: MeterUI;
+  selected: boolean;
+  onSelect: () => void;
 }
 const MenuItem = (props: MenuItemProps) => {
-  const { meterUI } = props;
+  const { meterUI, selected, onSelect } = props;
   const { label, Icon, bgColor } = meterUI;
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  return (
-    <Stack
-      sx={{
-        backgroundColor: bgColor,
-        width: "100%",
-        justifyContent: "center"
-      }}
-    >
+  const renderMobile = () => {
+    return (
       <Stack
-        direction={"column"}
         sx={{
           height: "100%",
           alignItems: "center",
@@ -72,21 +76,72 @@ const MenuItem = (props: MenuItemProps) => {
       >
         <Icon
           sx={{
-            height: { xs: "60%", sm: "40%" },
-            width: { xs: "60%", sm: "40%" }
+            height: "60%",
+            width: "60%"
           }}
         />
-        {!isMobile ? (
-          <Typography
-            variant={"caption"}
-            sx={{
-              verticalAlign: "top"
-            }}
-          >
-            {label}
-          </Typography>
-        ) : null}
       </Stack>
+    );
+  };
+
+  const renderDesktop = () => {
+    return (
+      <Stack
+        direction={"row"}
+        sx={{
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <Icon
+          sx={{
+            height: "40%",
+            mr: 1
+          }}
+        />
+        <Typography
+          variant={"caption"}
+          sx={{
+            verticalAlign: "top",
+            fontWeight: selected ? 400 : 100
+          }}
+        >
+          {label}
+        </Typography>
+      </Stack>
+    );
+  };
+
+  return (
+    <Stack
+      onClick={onSelect}
+      component={motion.div}
+      variants={{
+        initial: {
+          filter: "drop-shadow(0px 0px 0px rgb(0,0,0,0))",
+          transform: "scale(1)"
+        },
+        selected: {
+          filter: "drop-shadow(2px 4px 6px rgb(0,0,0,0.3))",
+          transform: "scale(1.2)",
+          zIndex: 105
+        },
+        unselected: {
+          filter: "drop-shadow(0px 0px 0px rgb(0,0,0,0))",
+          transform: "scale(0.8)",
+          zIndex: 95
+        }
+      }}
+      animate={selected ? "selected" : "initial"}
+      sx={{
+        backgroundColor: bgColor,
+        width: "100%",
+        justifyContent: "center",
+        transformOrigin: "bottom"
+      }}
+    >
+      {isMobile ? renderMobile() : renderDesktop()}
     </Stack>
   );
 };

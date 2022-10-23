@@ -6,8 +6,7 @@ import {
   Box,
   Collapse,
   useMediaQuery,
-  useTheme,
-  Paper
+  useTheme
 } from "@mui/material";
 import { DateTime } from "luxon";
 import React, { useContext, useEffect, useState } from "react";
