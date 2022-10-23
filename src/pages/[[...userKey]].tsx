@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import Graph from "../components/Graph";
 import { useMemo } from "react";
 import getDailyAverages from "../utils/getDailyAverages";
-import MeterEntry from "../components/MeterEntry";
 import periodsForAverage from "../utils/periodsForAverage";
 import { Box, Divider, Paper, PaperProps, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
@@ -10,7 +9,6 @@ import DevTools from "~/components/DevTools";
 import UserContext from "~/users/UserContext";
 import useUser from "~/users/useUser";
 import Menu from "../components/Menu";
-import { menuSpacerProps } from "~/components/Menu/menuSpacerProps";
 import meterUIs from "~/components/Menu/MeterUI";
 
 const Home: NextPage = () => {

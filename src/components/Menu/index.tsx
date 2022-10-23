@@ -54,14 +54,6 @@ const MenuItem = (props: MenuItemProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const renderLabelBox = (text: React.ReactNode) => (
-    <Box sx={{ height: { xs: "20%", sm: "30%" } }}>
-      <Typography variant={"caption"} sx={{ verticalAlign: "top" }}>
-        {text}
-      </Typography>
-    </Box>
-  );
-
   return (
     <Stack
       sx={{
@@ -88,9 +80,7 @@ const MenuItem = (props: MenuItemProps) => {
           <Typography
             variant={"caption"}
             sx={{
-              verticalAlign: "top",
-              textShadow:
-                "0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08)"
+              verticalAlign: "top"
             }}
           >
             {label}
