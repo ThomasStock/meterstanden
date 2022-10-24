@@ -26,8 +26,8 @@ const Menu = () => {
         sx={(theme) => ({
           position: "fixed",
           bottom: 0,
-          right: 0,
-          left: 0,
+          right: -25,
+          left: -25,
           ...menuSpacerProps,
           zIndex: "100",
           backgroundColor: theme.palette.secondary.main
@@ -91,7 +91,8 @@ const MenuItem = (props: MenuItemProps) => {
         sx={{
           height: "100%",
           alignItems: "center",
-          justifyContent: "center"
+          justifyContent: "center",
+          transform: "skewX(15deg)"
         }}
       >
         <Icon
@@ -120,16 +121,16 @@ const MenuItem = (props: MenuItemProps) => {
       variants={{
         initial: {
           filter: "drop-shadow(0px 0px 0px rgb(0,0,0,0))",
-          transform: "scale(1)"
+          transform: "scale(1) skewX(-15deg)"
         },
         selected: {
           filter: "drop-shadow(2px 4px 6px rgb(0,0,0,0.3))",
-          transform: "scale(1.2)",
+          transform: "scale(1.05) skewX(-15deg)",
           zIndex: 105
         },
         unselected: {
           filter: "drop-shadow(0px 0px 0px rgb(0,0,0,0))",
-          transform: "scale(0.8)",
+          transform: "scale(0.8) skewX(-15deg)",
           zIndex: 95
         }
       }}
