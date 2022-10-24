@@ -9,7 +9,7 @@ import DevTools from "~/components/DevTools";
 import UserContext from "~/users/UserContext";
 import useUser from "~/users/useUser";
 import Menu from "../components/Menu";
-import meterUIs from "~/components/Menu/MeterUI";
+import meterUIs, { MeterUI } from "~/components/Menu/MeterUI";
 
 const Home: NextPage = () => {
   const userService = useUser();
@@ -48,7 +48,7 @@ const Home: NextPage = () => {
                   data={dailyAverages}
                   isAverage
                   periods={periodsForAverage}
-                  meterUI={meterUIs[0]}
+                  meterUI={meterUIs[0] as MeterUI}
                 />
               ) : (
                 <Typography>
@@ -62,7 +62,7 @@ const Home: NextPage = () => {
                   title="Meterstand evolutie"
                   energyUnit="kWh"
                   data={meterValues}
-                  meterUI={meterUIs[0]}
+                  meterUI={meterUIs[0] as MeterUI}
                 />
               ) : null}
             </Stack>

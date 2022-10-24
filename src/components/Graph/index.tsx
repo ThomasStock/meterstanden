@@ -15,7 +15,7 @@ import { Stack } from "@mui/material";
 import useAppStore, { PeriodOptions } from "../../utils/useAppStore";
 import PeriodPicker from "./PeriodPicker";
 import getOptions, { Options } from "./getOptions";
-import MeterUI from "../Menu/MeterUI";
+import { MeterUI } from "../Menu/MeterUI";
 
 Chart.register(
   TimeScale,
