@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import meterUIs, { MeterUI } from "./MeterUI";
 
 const menuSpacerProps: SxProps<Theme> = {
-  height: 100,
+  height: 70,
   maxHeight: "10vh"
 };
 
@@ -42,6 +42,7 @@ const Menu = () => {
           {meterUIs.map((meterUI, i) => (
             <MenuItem
               key={i}
+              zIndex={200 - i}
               onSelect={() => setSelectedIndex(i)}
               selected={selectedIndex === i}
               meterUI={meterUI}
@@ -57,9 +58,10 @@ interface MenuItemProps {
   meterUI: MeterUI;
   selected: boolean;
   onSelect: () => void;
+  zIndex: number;
 }
 const MenuItem = (props: MenuItemProps) => {
-  const { meterUI, selected, onSelect } = props;
+  const { meterUI, selected, onSelect, zIndex } = props;
   const { label, Icon, bgColor } = meterUI;
 
   const theme = useTheme();
@@ -120,16 +122,13 @@ const MenuItem = (props: MenuItemProps) => {
       component={motion.div}
       variants={{
         initial: {
-          filter: "drop-shadow(0px 0px 0px rgb(0,0,0,0))",
           transform: "scale(1) skewX(-15deg)"
         },
         selected: {
-          filter: "drop-shadow(2px 4px 6px rgb(0,0,0,0.3))",
           transform: "scale(1.05) skewX(-15deg)",
           zIndex: 105
         },
         unselected: {
-          filter: "drop-shadow(0px 0px 0px rgb(0,0,0,0))",
           transform: "scale(0.8) skewX(-15deg)",
           zIndex: 95
         }
@@ -139,7 +138,8 @@ const MenuItem = (props: MenuItemProps) => {
         backgroundColor: bgColor,
         width: "100%",
         justifyContent: "center",
-        transformOrigin: "bottom"
+        transformOrigin: "bottom",
+        filter: "drop-shadow(2px 4px 6px rgb(0,0,0,0.3))"
       }}
     >
       {isMobile ? renderMobile() : renderDesktop()}
