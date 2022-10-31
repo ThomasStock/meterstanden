@@ -19,7 +19,7 @@ const Menu = () => {
   };
 
   const entryHeightProps: SxProps<Theme> = {
-    height: { xs: 70, sm: 90 }
+    height: { xs: 70 + 50 + 100, sm: 90 + 70 + 100 }
   };
 
   return (
@@ -29,12 +29,15 @@ const Menu = () => {
       <Box
         sx={(theme) => ({
           position: "fixed",
-          bottom: menuHeightProps.height,
-          ...entryHeightProps,
+          bottom: -100,
           right: 0,
           left: 0,
+          mx: "auto",
           zIndex: 90,
-          backgroundColor: theme.palette.background.paper
+          backgroundColor: meterUIs[selectedIndex]?.bgColor,
+          borderTop: "0px solid " + meterUIs[selectedIndex]?.bgColor,
+          filter: `drop-shadow(0px -1px 8px rgb(0,0,0,0.3))`,
+          ...entryHeightProps
         })}
       >
         entry
@@ -45,9 +48,10 @@ const Menu = () => {
           bottom: 0,
           right: -25,
           left: -25,
-          ...menuHeightProps,
-          zIndex: "100",
-          backgroundColor: theme.palette.background.paper
+          zIndex: 100,
+          backgroundColor: theme.palette.background.paper,
+          filter: `drop-shadow(0px -1px 8px rgb(0,0,0,0.3))`,
+          ...menuHeightProps
         })}
       >
         <Stack
@@ -145,7 +149,7 @@ const MenuItem = (props: MenuItemProps) => {
         },
         selected: {
           transform: "scale(1) skewX(-15deg)",
-          filter: "drop-shadow(2px 4px 6px rgb(0,0,0,0.3))",
+          filter: "drop-shadow(0px 0px 0px rgb(0,0,0,0))", //filter: "drop-shadow(2px 4px 6px rgb(0,0,0,0.3))",
           zIndex: 105
         },
         unselected: {
